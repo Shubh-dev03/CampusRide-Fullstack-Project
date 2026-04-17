@@ -17,7 +17,7 @@ const rideRoutes = require("./routes/rideRoutes");
 const errorMiddleware = require("./middlewares/errorMiddleware");
 
 //Server Port
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 // Connect DataBase
 connectDB();
 
