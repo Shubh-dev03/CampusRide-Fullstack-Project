@@ -1,174 +1,144 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { showError, showSuccess } from "../utility/toast";
+import { useAuth } from "../context/AuthContext";
 
 function Home() {
-  // State to hold the user's rides
   const [rides, setRides] = useState([]);
+  const [deletingId, setDeletingId] = useState(null);
   const navigate = useNavigate();
-  const role = localStorage.getItem("role") || "";
+  const { token, role } = useAuth();
 
-  //   Fetch the user's rides when the component mounts
   useEffect(() => {
     const fetchRides = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const role = localStorage.getItem("role");
         if (role !== "driver") {
-          return <p>Access Denied</p>;
+          navigate("/rider");
+          return;
         }
 
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/rides/myrides`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           },
         );
+
         setRides(res.data.data);
-        // console.log("Fetched rides:", res.data);
       } catch (error) {
-        console.log("Error fetching rides:", error);
+        console.log(error);
+        showError("Failed to fetch rides");
       }
     };
+
     fetchRides();
-  }, []);
+  }, [role, navigate, token]);
 
-  //Delete ride function
   const handleDelete = async (rideId) => {
-    try {
-      const token = localStorage.getItem("token");
+    if (!window.confirm("Delete this ride?")) return;
 
-      // Confirm before deleting the ride
-      if (!window.confirm("Are you sure you want to delete this ride?")) {
-        return;
-      }
+    try {
+      setDeletingId(rideId);
 
       await axios.delete(
         `${import.meta.env.VITE_API_URL}/api/rides/${rideId}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         },
       );
 
-      // Remove the deleted ride from the state to update the UI
-      setRides(rides.filter((ride) => ride._id !== rideId));
-      alert("Ride deleted successfully.");
+      setRides((prev) => prev.filter((ride) => ride._id !== rideId));
+      showSuccess("Ride deleted");
     } catch (error) {
-      console.log("Error deleting ride:", error);
-      alert("Failed to delete ride. Please try again.");
+      console.log(error);
+      showError("Failed to delete ride");
+    } finally {
+      setDeletingId(null);
     }
   };
 
-  // Function to handle user logout
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
-  };
-
-  // Main Page
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="bg-white shadow p-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold">CampusRide</h1>
+    <div className="min-h-screen bg-[#F9FAFB]">
+      <div className="max-w-6xl mx-auto px-6 py-8">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-semibold text-[#111827]">My Rides</h2>
 
-        <div className="space-x-3">
-          {/* Navigation bar with links to Home, Create Ride, and Logout */}
-
-          {/* Home button */}
           <button
-            onClick={() => navigate("/")}
-            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+            onClick={() => navigate("/create-ride")}
+            className="bg-[#2563EB] text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
           >
-            Home
-          </button>
-
-          {/* Create Ride button for drivers */}
-          {role === "driver" && (
-            <button
-              onClick={() => navigate("/create-ride")}
-              className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Create Ride
-            </button>
-          )}
-
-          {/* logout button */}
-          <button
-            onClick={handleLogout}
-            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-          >
-            Logout
+            + Create Ride
           </button>
         </div>
-      </div>
-      {/* Main content */}
-      <div className="max-w-2xl mx-auto p-4">
-        {" "}
-        <h2 className="text-2xl font-bold mb-4">My Rides</h2>
-        {rides.length === 0 ? (
-          <p className="text-gray-500">You have not created any rides yet.</p>
-        ) : (
-          <div>
-            {rides &&
-              rides.map((ride) => (
-                // Display each ride in a card format with details and action buttons
-                <div
-                  key={ride._id}
-                  className="bg-white rounded-xl shadow p-5 mb-4 hover:shadow-lg transition"
-                >
-                  {/* Ride title and fare */}
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold">
-                      {ride.from} &#8594; {ride.to}
-                    </h3>
-                    <span className="text-green-600">
-                      &#8377;{ride.rideFare}
-                    </span>
-                  </div>
 
-                  {/* Ride details */}
-                  <div className="mt-2 text-gray-600 text-sm">
-                    <p>Seats : {ride.availableSeats}</p>
-                    <p>Time : {ride.rideTime}</p>
-                  </div>
+        {rides.length === 0 ? (
+          <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 text-center text-[#9CA3AF]">
+            No rides created yet.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+            {rides.map((ride) => (
+              <div
+                key={ride._id}
+                className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm hover:shadow-md transition"
+              >
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-[#111827]">
+                    {ride.from} → {ride.to}
+                  </h3>
+
+                  <span className="text-[#111827] font-medium">
+                    ₹{ride.rideFare}
+                  </span>
+                </div>
+
+                <div className="mt-2 text-sm text-[#4B5563]">
+                  <p>Seats: {ride.availableSeats}</p>
+                  <p>Time: {ride.rideTime}</p>
+                </div>
+
+                {/* Status */}
+                <div className="mt-2">
+                  {ride.availableSeats > 0 ? (
+                    <span className="text-[#10B981] text-sm font-medium">
+                      Seats Available
+                    </span>
+                  ) : (
+                    <span className="text-[#EF4444] text-sm font-medium">
+                      Full
+                    </span>
+                  )}
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-2 mt-4 flex-wrap">
                   <button
                     onClick={() => navigate(`/ride/${ride._id}`)}
-                    className="mt-2 px-3 py-1 bg-purple-500 text-white rounded"
+                    className="px-3 py-1.5 text-sm border border-[#E5E7EB] rounded-lg hover:bg-[#F3F4F6]"
                   >
-                    View passengers
+                    View
                   </button>
 
-                  {/* Delete button */}
-                  <button
-                    onClick={() => handleDelete(ride._id)}
-                    className="mt-3 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                  >
-                    Delete{" "}
-                  </button>
-
-                  {/* Edit button */}
                   <button
                     onClick={() => navigate(`/edit-ride/${ride._id}`)}
-                    className="z-15 relative mt-2 mr-2  px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                    className="px-3 py-1.5 text-sm border border-[#E5E7EB] rounded-lg hover:bg-[#F3F4F6]"
                   >
                     Edit
                   </button>
+
+                  <button
+                    disabled={deletingId === ride._id}
+                    onClick={() => handleDelete(ride._id)}
+                    className="px-3 py-1.5 text-sm text-[#EF4444] border border-[#E5E7EB] rounded-lg hover:bg-[#F3F4F6] disabled:opacity-50"
+                  >
+                    {deletingId === ride._id ? "Deleting..." : "Delete"}
+                  </button>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
-        )}
-        {/* create ride button */}
-        {role === "driver" && (
-          <button
-            onClick={() => navigate("/create-ride")}
-            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            &#x002B; Create Ride
-          </button>
         )}
       </div>
     </div>
