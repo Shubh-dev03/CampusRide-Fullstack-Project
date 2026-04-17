@@ -38,7 +38,7 @@ function CreateRide() {
         },
       );
       // Making Changes in alert
-      showSuccess("Ride created successflly");
+      showSuccess("Ride created successfully");
 
       // Clear form fields after successful ride creation
       setFrom("");

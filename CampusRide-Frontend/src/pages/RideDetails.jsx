@@ -12,7 +12,6 @@ function RideDetails() {
   useEffect(() => {
     const fetchRide = async () => {
       try {
-
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/rides/${rideId}`,
           {
@@ -31,7 +30,7 @@ function RideDetails() {
     };
 
     fetchRide();
-  }, [rideId]);
+  }, [rideId, token]);
 
   if (loading) {
     return <p className="text-gray-500 text-sm">Loading ride details...</p>;

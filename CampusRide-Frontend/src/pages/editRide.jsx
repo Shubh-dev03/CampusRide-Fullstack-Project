@@ -21,7 +21,6 @@ function EditRide() {
   useEffect(() => {
     const fetchRide = async () => {
       try {
-
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/rides/${id}`,
           //
@@ -53,7 +52,6 @@ function EditRide() {
     setLoading(true);
 
     try {
-
       await axios.patch(
         `${import.meta.env.VITE_API_URL}/api/rides/edit/${id}`, // ⚠️ check route
         {
@@ -146,7 +144,7 @@ function EditRide() {
               Ride Time
             </label>
             <input
-              type="text"
+              type="datetime-local"
               value={rideTime}
               onChange={(e) => setRideTime(e.target.value)}
               placeholder="e.g. 8:00 AM"
