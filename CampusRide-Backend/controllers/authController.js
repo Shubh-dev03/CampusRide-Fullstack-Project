@@ -6,19 +6,11 @@ const JWT = require("jsonwebtoken");
 const registerController = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
-    console.log(req.body);
-    // Validation
-    // if (!["rider", "driver"].incl)) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Inv. Role must be either 'rider' or 'driver'.",
-    //   });
-    // }
 
     //Check If the user already exist
-    const user = await User.findOne({ email });
+    const existingUser = await User.findOne({ email });
 
-    if (user) {
+    if (existingUser) {
       return res.status(400).json({
         success: false,
         message: "User already registered",
@@ -38,14 +30,18 @@ const registerController = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Registered successfully!",
-      user: newUser,
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        vehicleDetails: newUser.vehicleDetails, // null on register, always
+      },
     });
   } catch (error) {
-    console.log("Error detected", error);
+    console.log("Register error", error);
     res.status(500).json({
       success: false,
-      message: "Error detected",
-      error,
+      message: "Registration failed. Please try again",
     });
   }
 };
@@ -54,16 +50,13 @@ const registerController = async (req, res) => {
 const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log("Request Body:", req.body);
 
     //Find user in DB using email
     const user = await User.findOne({ email });
-    console.log("DataBase User:", user);
-
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User Not Found.Please register",
+        message: "No account found with this email. Please register.",
       });
     }
     //Comparing Passwords
@@ -72,7 +65,7 @@ const loginController = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: "Invalid Password.",
+        message: "Incorrect Password.",
       });
     }
     //Generate JWT Token
@@ -87,13 +80,17 @@ const loginController = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone,
+        vehicleDetails: user.vehicleDetails ?? null,
+        // vehicleDetails being non-null tells the frontend
+        // this user can offer rides without hitting an extra endpoint
       },
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       success: false,
-      message: "Login Failed",
+      message: "Login Failed. Please try again.",
     });
   }
 };

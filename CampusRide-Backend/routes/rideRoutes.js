@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const authMiddleware = require("../middlewares/authMiddleware");
+const hasVehicleDetails = require("../middlewares/vehicleDetail");
 
 const {
   getAllRides,
@@ -22,9 +23,12 @@ router.get("/", getAllRides);
 router.get("/search", searchRides);
 
 // Protected Routes
-router.post("/create", authMiddleware, createRide);
+// createRide: must be logged in AND have vehicle details on their profile
+router.post("/create", authMiddleware, hasVehicleDetails, createRide);
+
 router.get("/mybookings", authMiddleware, myBookings);
 router.get("/myrides", authMiddleware, myRides);
+
 router.get("/allrides", authMiddleware, fecthAllRides);
 
 router.get("/:rideId", authMiddleware, getRideById);

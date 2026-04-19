@@ -16,8 +16,8 @@ const createRide = asyncHandler(async (req, res) => {
     throw new CustomError("Fare cannot be negative", 400);
   }
 
-  if (availableSeats < 0) {
-    throw new CustomError("Seats cannot be negative", 400);
+  if (availableSeats < 1) {
+    throw new CustomError("Seats must be at least 1", 400);
   }
 
   // Prevent duplicate ride at same time
@@ -27,7 +27,7 @@ const createRide = asyncHandler(async (req, res) => {
   });
 
   if (existingRide) {
-    throw new CustomError("Ride already exists at this time", 400);
+    throw new CustomError("You already have a ride posted at this time", 400);
   }
 
   // Create ride
@@ -48,9 +48,12 @@ const createRide = asyncHandler(async (req, res) => {
   });
 });
 
-// # Get All Rides
+// # Get All Rides (Public)
 const getAllRides = asyncHandler(async (req, res) => {
-  const rides = await Ride.find({ availableSeats: { $gt: 0 } });
+  const rides = await Ride.find({ availableSeats: { $gt: 0 } }).populate(
+    "driver",
+    "name email phone",
+  );
 
   res.status(200).json({
     success: true,
@@ -84,7 +87,6 @@ const bookRide = asyncHandler(async (req, res) => {
 
   ride.passengers.push(req.userId);
   ride.availableSeats -= 1;
-
   await ride.save();
 
   res.status(200).json({
@@ -121,12 +123,12 @@ const cancelRide = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "Ride cancelled successfully",
+    message: "Booking cancelled successfully",
     data: ride,
   });
 });
 
-// # My Bookings
+// # My Bookings (Rides where I am a passenger)
 const myBookings = asyncHandler(async (req, res) => {
   const rides = await Ride.find({ passengers: req.userId }).populate(
     "driver",
@@ -161,11 +163,11 @@ const deleteRide = asyncHandler(async (req, res) => {
   });
 });
 
-// # My Rides
+// # My Rides (rides where I an the driver)
 const myRides = asyncHandler(async (req, res) => {
   const rides = await Ride.find({ driver: req.userId }).populate(
     "passengers",
-    "name email",
+    "name email phone",
   );
 
   res.status(200).json({
@@ -175,7 +177,7 @@ const myRides = asyncHandler(async (req, res) => {
   });
 });
 
-// # Search single Ride by id
+// # Get Ride by id
 const getRideById = asyncHandler(async (req, res) => {
   const { rideId } = req.params;
 
@@ -183,7 +185,6 @@ const getRideById = asyncHandler(async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(rideId)) {
     throw new CustomError("Invalid ride ID", 400);
   }
-  console.log("Received Id :", rideId);
 
   //  Find ride and populate driver and passengers
   const ride = await Ride.findById(rideId)
@@ -195,11 +196,13 @@ const getRideById = asyncHandler(async (req, res) => {
     throw new CustomError("Ride not found", 404);
   }
 
-  // Only driver and passengers can view ride details
-  if (
-    ride.driver._id.toString() !== req.userId &&
-    !ride.passengers.some((id) => id.toString() === req.userId)
-  ) {
+  const isDriver = ride.driver._id.toString() === req.userId;
+
+  const isPassenger = ride.passengers.some(
+    (p) => p._id.toString() === req.userId,
+  );
+
+  if (!isDriver && !isPassenger) {
     throw new CustomError("Unauthorized to view this ride", 403);
   }
   // Response
@@ -210,7 +213,7 @@ const getRideById = asyncHandler(async (req, res) => {
   });
 });
 
-// # Search Rides
+// # Search Rides (public)
 const searchRides = asyncHandler(async (req, res) => {
   const { from, to, rideTime } = req.query;
 
@@ -222,7 +225,7 @@ const searchRides = asyncHandler(async (req, res) => {
   if (to) query.to = new RegExp(to.trim(), "i");
   if (rideTime) query.rideTime = rideTime;
 
-  const rides = await Ride.find(query);
+  const rides = await Ride.find(query).populate("driver", "name email phone");
 
   res.status(200).json({
     success: true,
@@ -232,7 +235,7 @@ const searchRides = asyncHandler(async (req, res) => {
   });
 });
 
-// # Edit Ride
+// # Edit Ride (Driver only)
 const editRide = asyncHandler(async (req, res) => {
   const { rideId } = req.params;
   const { from, to, rideTime, rideFare, availableSeats } = req.body;
@@ -276,7 +279,10 @@ const editRide = asyncHandler(async (req, res) => {
 
 // #Get all Rides
 const fecthAllRides = asyncHandler(async (req, res) => {
-  const rides = await Ride.find({ availableSeats: { $gt: 0 } });
+  const rides = await Ride.find({ availableSeats: { $gt: 0 } }).populate(
+    "driver",
+    "name email phone",
+  );
 
   if (!rides) {
     throw new CustomError("API failed to fetch allRides", 500);
