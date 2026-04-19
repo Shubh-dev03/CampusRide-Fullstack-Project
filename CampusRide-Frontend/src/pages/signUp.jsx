@@ -3,31 +3,27 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-function Signup() {
+export default function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
-  const [role, setRole] = useState("rider");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       setLoading(true);
-
       await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
         name,
         email,
         password,
         phone,
-        role,
+        // no role field — removed
       });
-
-      toast.success("Account created successfully");
+      toast.success("Account created! Please log in.");
       navigate("/login");
     } catch (error) {
       toast.error(error.response?.data?.message || "Signup failed");
@@ -37,19 +33,38 @@ function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-sm p-6">
-        {/* Title */}
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">
+    <div
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{
+        background: "linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)",
+      }}
+    >
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+        <div className="flex justify-center mb-5">
+          <div className="w-14 h-14 bg-[#2563EB] rounded-xl flex items-center justify-center shadow-md">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h1l2-3h12l2 3h1a2 2 0 012 2v6a2 2 0 01-2 2h-2"
+                stroke="white"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <h2 className="text-2xl font-semibold text-[#111827] text-center mb-1">
           Create your account
         </h2>
+        <p className="text-sm text-[#9CA3AF] text-center mb-6">
+          Join CampusRide today
+        </p>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Name
+            <label className="block text-sm font-medium text-[#374151] mb-1">
+              Full Name
             </label>
             <input
               type="text"
@@ -57,99 +72,66 @@ function Signup() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:bg-white"
             />
           </div>
 
-          {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[#374151] mb-1">
               Email
             </label>
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder="you@campus.edu"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:bg-white"
             />
           </div>
 
-          {/* Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[#374151] mb-1">
               Password
             </label>
             <input
               type="password"
-              placeholder="Enter password"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:bg-white"
             />
           </div>
 
-          {/* Phone */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[#374151] mb-1">
               Phone
             </label>
             <input
               type="tel"
-              placeholder="Enter phone number"
+              placeholder="+91 98765 43210"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:bg-white"
             />
           </div>
 
-          {/* Role Selection */}
-          <div>
-            <p className="text-sm font-medium text-gray-700 mb-2">
-              Select Role
-            </p>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2 text-sm text-gray-600">
-                <input
-                  type="radio"
-                  value="rider"
-                  checked={role === "rider"}
-                  onChange={(e) => setRole(e.target.value)}
-                />
-                Rider
-              </label>
-
-              <label className="flex items-center gap-2 text-sm text-gray-600">
-                <input
-                  type="radio"
-                  value="driver"
-                  checked={role === "driver"}
-                  onChange={(e) => setRole(e.target.value)}
-                />
-                Driver
-              </label>
-            </div>
-          </div>
-
-          {/* Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition disabled:opacity-50"
+            className="w-full bg-[#2563EB] text-white py-3 rounded-xl text-sm font-medium hover:bg-blue-700 transition disabled:opacity-50 mt-2"
           >
             {loading ? "Creating account..." : "Sign Up"}
           </button>
         </form>
 
-        {/* Login Redirect */}
-        <p className="mt-4 text-sm text-gray-600 text-center">
+        <p className="mt-5 text-sm text-[#6B7280] text-center">
           Already have an account?{" "}
           <span
             onClick={() => navigate("/login")}
-            className="text-blue-600 cursor-pointer font-medium"
+            className="text-[#2563EB] cursor-pointer font-medium hover:underline"
           >
             Log in
           </span>
@@ -158,5 +140,3 @@ function Signup() {
     </div>
   );
 }
-
-export default Signup;
