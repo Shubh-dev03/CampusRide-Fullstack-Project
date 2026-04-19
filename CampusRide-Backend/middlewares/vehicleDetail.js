@@ -6,7 +6,7 @@ const hasVehicleDetails = (req, res, next) => {
     return res.status(400).json({
       success: false,
       message: "Vehicle details required to offer a ride.",
-      code: "NO_VEHICLE_DETAILS", // lets the frontend trigger the car-details modal
+      code: "NO_VEHICLE_DETAILS",
     });
   }
   next();
