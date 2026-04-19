@@ -1,4 +1,5 @@
 const JWT = require("jsonwebtoken");
+const { User } = require("../models/userModel");
 
 const authMiddleware = async (req, res, next) => {
   try {
@@ -6,7 +7,7 @@ const authMiddleware = async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     //If no token provided
-    if (!authHeader || !authHeader.startsWith("Bearer")) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
         success: false,
         message: "No token provided.",
@@ -42,6 +43,8 @@ const authMiddleware = async (req, res, next) => {
       error.name === "TokenExpiredError"
         ? "Session expired. Please log in again."
         : "Invalid token. Please log in again.";
+    console.log("AUTH MIDDLEWARE ERROR:", error.message);
+    console.log("AUTH HEADER:", req.headers.authorization);
 
     res.status(401).json({ success: false, message: "Error in Middleware" });
   }
