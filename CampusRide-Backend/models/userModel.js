@@ -18,12 +18,6 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: Number,
     },
-    role: {
-      type: String,
-      enum: ["rider", "driver"],
-      default: "rider",
-      required: true,
-    },
   },
   { timestamps: true },
 );

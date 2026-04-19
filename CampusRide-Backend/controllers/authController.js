@@ -5,15 +5,15 @@ const JWT = require("jsonwebtoken");
 // REGISTER CONTROLLER
 const registerController = async (req, res) => {
   try {
-    const { name, email, password, phone, role } = req.body;
+    const { name, email, password, phone } = req.body;
     console.log(req.body);
     // Validation
-    if (!["rider", "driver"].includes(role)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid role. Role must be either 'rider' or 'driver'.",
-      });
-    }
+    // if (!["rider", "driver"].incl)) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Inv. Role must be either 'rider' or 'driver'.",
+    //   });
+    // }
 
     //Check If the user already exist
     const user = await User.findOne({ email });
@@ -34,7 +34,6 @@ const registerController = async (req, res) => {
       email,
       phone,
       password: hashedPassword,
-      role,
     });
     res.status(201).json({
       success: true,
@@ -88,7 +87,6 @@ const loginController = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role,
       },
     });
   } catch (error) {
