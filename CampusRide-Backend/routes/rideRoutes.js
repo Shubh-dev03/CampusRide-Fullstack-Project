@@ -15,7 +15,6 @@ const {
   editRide,
   deleteRide,
   getRideById,
-  fecthAllRides,
 } = require("../controllers/rideController");
 
 // Public Routes
@@ -28,8 +27,6 @@ router.post("/create", authMiddleware, hasVehicleDetails, createRide);
 
 router.get("/mybookings", authMiddleware, myBookings);
 router.get("/myrides", authMiddleware, myRides);
-
-router.get("/allrides", authMiddleware, fecthAllRides);
 
 router.get("/:rideId", authMiddleware, getRideById);
 router.post("/cancel/:rideId", authMiddleware, cancelRide);
