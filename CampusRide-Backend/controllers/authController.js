@@ -37,13 +37,22 @@ const registerController = async (req, res) => {
         vehicleDetails: newUser.vehicleDetails, // null on register, always
       },
     });
-  } catch (error) {
-    console.log("Register error", error);
+  }//Temporary block 
+  catch (error) {
+    console.log("REGISTER ERROR FULL:", JSON.stringify(error, null, 2));
+    console.log("REGISTER ERROR MESSAGE:", error.message);
     res.status(500).json({
       success: false,
-      message: "Registration failed. Please try again",
+      message: error.message, // ← send actual error to frontend
     });
   }
+  // } catch (error) {
+  //   console.log("Register error", error);
+  //   res.status(500).json({
+  //     success: false,
+  //     message: "Registration failed. Please try again",
+  //   });
+  // }
 };
 
 // LOGIN CONTROLLER
