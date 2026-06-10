@@ -128,17 +128,29 @@ function MyBookings() {
                 ride.availableSeats + (ride.passengers?.length ?? 0);
               const bookedSeats = ride.passengers?.length ?? 0;
 
+              const isCompleted = new Date(ride.rideTime) < new Date();
+
               return (
                 <div
                   key={ride._id}
                   className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm hover:shadow-md transition"
                 >
                   {/* Driver */}
-                  <div className="mb-4">
-                    <p className="text-xs text-[#9CA3AF] font-medium">Driver</p>
-                    <p className="text-[#111827] font-semibold text-base leading-tight mt-0.5">
-                      {ride.driver?.name ?? "Unknown"}
-                    </p>
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <p className="text-xs text-[#9CA3AF] font-medium">
+                        Driver
+                      </p>
+                      <p className="text-[#111827] font-semibold text-base leading-tight mt-0.5">
+                        {ride.driver?.name ?? "Unknown"}
+                      </p>
+                    </div>
+
+                    {isCompleted && (
+                      <span className=" text-xs- bg-[#F3F4F6] text-[#6B7280] px-2.5 py-1 rounded-full font-medium ">
+                        Completed
+                      </span>
+                    )}
                   </div>
 
                   {/* Route */}
@@ -232,15 +244,24 @@ function MyBookings() {
                   </div>
 
                   {/* Cancel button */}
-                  <button
-                    onClick={() => handleCancel(ride._id)}
-                    disabled={cancellingId === ride._id}
-                    className="w-full bg-[#EF4444] text-white py-2.5 rounded-xl text-sm font-medium hover:bg-red-600 transition disabled:opacity-50"
-                  >
-                    {cancellingId === ride._id
-                      ? "Cancelling..."
-                      : "Cancel Booking"}
-                  </button>
+                  {/* Completed Ride Badge */}
+                  {isCompleted ? (
+                    <div className="mt-4 text-center">
+                      <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-[#F3F4F6] text-[#6B7280]">
+                        Ride Completed
+                      </span>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => handleCancel(ride._id)}
+                      disabled={cancellingId === ride._id}
+                      className="w-full bg-[#EF4444] text-white py-2.5 rounded-xl text-sm font-medium hover:bg-red-600 transition disabled:opacity-50"
+                    >
+                      {cancellingId === ride._id
+                        ? "Cancelling..."
+                        : "Cancel Booking"}
+                    </button>
+                  )}
                 </div>
               );
             })}

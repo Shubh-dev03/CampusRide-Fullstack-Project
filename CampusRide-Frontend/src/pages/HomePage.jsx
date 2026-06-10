@@ -21,8 +21,6 @@ const formatRideTime = (rideTime) => {
   );
 };
 
-const isPast = (rideTime) => new Date(rideTime) < new Date();
-
 function HomePage() {
   const { token, user, canOfferRide } = useAuth();
 
@@ -55,7 +53,14 @@ function HomePage() {
         : `${import.meta.env.VITE_API_URL}/api/rides`;
 
       const res = await axios.get(url);
-      setRides(res.data.data);
+      // Changes Below
+
+      const activeRides = res.data.data.filter(
+        (ride) => new Date(ride.rideTime) > new Date(),
+      );
+
+      setRides(activeRides);
+      // Changes above
     } catch (error) {
       console.log(error);
       showError("Failed to fetch rides");
@@ -243,7 +248,7 @@ function HomePage() {
             {rides.map((ride) => {
               const isOwnRide =
                 ride.driver?._id === user?.id || ride.driver?.id === user?.id;
-              const completed = isPast(ride.rideTime);
+
               const totalSeats =
                 ride.availableSeats + (ride.passengers?.length ?? 0);
               const bookedSeats = ride.passengers?.length ?? 0;
@@ -263,12 +268,8 @@ function HomePage() {
                         {ride.driver?.name ?? "Unknown"}
                       </p>
                     </div>
-                    {completed && (
-                      <span className="text-xs bg-[#F3F4F6] text-[#6B7280] px-2.5 py-1 rounded-full font-medium">
-                        Completed
-                      </span>
-                    )}
-                    {isOwnRide && !completed && (
+
+                    {isOwnRide && (
                       <span className="text-xs bg-[#EFF6FF] text-[#2563EB] px-2.5 py-1 rounded-full font-medium">
                         Your ride
                       </span>
@@ -366,7 +367,7 @@ function HomePage() {
                   </div>
 
                   {/* Book Ride button — hidden for own rides or completed rides */}
-                  {!isOwnRide && !completed && ride.availableSeats > 0 && (
+                  {!isOwnRide && ride.availableSeats > 0 && (
                     <button
                       disabled={bookingId === ride._id}
                       onClick={() => handleBooking(ride._id)}
