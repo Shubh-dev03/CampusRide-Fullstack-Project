@@ -50,15 +50,19 @@ const createRide = asyncHandler(async (req, res) => {
 
 // # Get All Rides (Public)
 const getAllRides = asyncHandler(async (req, res) => {
-  const rides = await Ride.find({ availableSeats: { $gt: 0 } }).populate(
-    "driver",
-    "name email phone",
-  );
+  // Changes Below
+  const now = new Date();
+  const rides = await Ride.find({
+    availableSeats: { $gt: 0 },
+  }).populate("driver", "name email phone");
 
+  const activeRides = rides.filter((ride) => new Date(ride.rideTime) > now);
+
+  // Changes above
   res.status(200).json({
     success: true,
     message: "Rides fetched successfully",
-    data: rides,
+    data: activeRidesides,
   });
 });
 
@@ -227,11 +231,16 @@ const searchRides = asyncHandler(async (req, res) => {
 
   const rides = await Ride.find(query).populate("driver", "name email phone");
 
+  // Changes Below
+  const activeRides = rides.filter(
+    (ride) => new Date(ride.rideTime) > new Date(),
+  );
+  // Changes above
   res.status(200).json({
     success: true,
     message: "Filtered rides",
-    count: rides.length,
-    data: rides,
+    count: activeRides.length,
+    data: activeRides,
   });
 });
 

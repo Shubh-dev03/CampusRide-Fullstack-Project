@@ -7,6 +7,7 @@ const connectDB = async () => {
     console.log("MONGO_DB Connected successfully!!");
   } catch (error) {
     console.log("Error in DataBase connection.", error);
+    process.exit(1);
   }
 };
 
