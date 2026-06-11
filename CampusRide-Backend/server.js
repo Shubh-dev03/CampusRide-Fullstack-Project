@@ -14,6 +14,7 @@ app.use(express.json());
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const rideRoutes = require("./routes/rideRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 const errorMiddleware = require("./middlewares/errorMiddleware");
 
 //Server Port
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/rides", rideRoutes);
+app.use("/api/chat", chatRoutes);
 app.use(errorMiddleware);
 
 app.listen(PORT, () => {
