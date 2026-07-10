@@ -27,11 +27,8 @@ function VehicleDetailsModal({ onClose, onSuccess }) {
         { headers: { Authorization: `Bearer ${token}` } },
       );
 
-      // Update AuthContext so canOfferRide becomes true immediately
       updateUser(res.data.data);
       showSuccess("Vehicle details saved!");
-
-      // Tell parent: vehicle is set, now open CreateRideModal
       onSuccess();
     } catch (error) {
       showError(
@@ -43,29 +40,31 @@ function VehicleDetailsModal({ onClose, onSuccess }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3 sm:p-4">
+      <div className="w-full max-w-md rounded-2xl bg-white p-4 shadow-xl sm:p-6 max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex justify-between items-start mb-1">
+        <div className="mb-1 flex items-start justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-[#111827]">
+            <h2 className="text-lg font-semibold text-[#111827] sm:text-xl">
               Add your vehicle
             </h2>
-            <p className="text-sm text-[#6B7280] mt-0.5">
+
+            <p className="mt-0.5 text-sm text-[#6B7280]">
               Required to offer rides on CampusRide
             </p>
           </div>
+
           <button
             onClick={onClose}
-            className="text-[#9CA3AF] hover:text-[#111827] transition text-xl leading-none"
+            className="text-xl leading-none text-[#9CA3AF] transition hover:text-[#111827]"
           >
             ×
           </button>
         </div>
 
-        {/* Info banner */}
-        <div className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-lg px-4 py-3 mb-5 mt-4">
-          <p className="text-sm text-[#1D4ED8]">
+        {/* Info Banner */}
+        <div className="mt-4 mb-5 rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] px-4 py-3">
+          <p className="text-sm leading-6 text-[#1D4ED8]">
             You only need to do this once. Your vehicle details will be saved to
             your profile.
           </p>
@@ -73,54 +72,60 @@ function VehicleDetailsModal({ onClose, onSuccess }) {
 
         <form onSubmit={handleSave} className="space-y-4">
           {/* Make + Model */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-3">
             <div>
-              <label className="block text-sm font-medium text-[#374151] mb-1">
+              <label className="mb-1 block text-sm font-medium text-[#374151]">
                 Make
               </label>
+
               <input
                 type="text"
                 placeholder="e.g. Toyota"
                 value={make}
                 onChange={(e) => setMake(e.target.value)}
                 required
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
+
             <div>
-              <label className="block text-sm font-medium text-[#374151] mb-1">
+              <label className="mb-1 block text-sm font-medium text-[#374151]">
                 Model
               </label>
+
               <input
                 type="text"
                 placeholder="e.g. Camry"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
                 required
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
           </div>
 
           {/* License Plate + Capacity */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-3">
             <div>
-              <label className="block text-sm font-medium text-[#374151] mb-1">
+              <label className="mb-1 block text-sm font-medium text-[#374151]">
                 License Plate
               </label>
+
               <input
                 type="text"
                 placeholder="e.g. MH12 AB1234"
                 value={licensePlate}
                 onChange={(e) => setLicensePlate(e.target.value.toUpperCase())}
                 required
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] uppercase"
+                className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
+
             <div>
-              <label className="block text-sm font-medium text-[#374151] mb-1">
+              <label className="mb-1 block text-sm font-medium text-[#374151]">
                 Capacity
               </label>
+
               <input
                 type="number"
                 min="1"
@@ -129,24 +134,25 @@ function VehicleDetailsModal({ onClose, onSuccess }) {
                 value={capacity}
                 onChange={(e) => setCapacity(e.target.value)}
                 required
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-2">
+          <div className="flex flex-col gap-3 pt-2 sm:flex-row">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 border border-[#E5E7EB] text-[#374151] py-2.5 rounded-lg text-sm font-medium hover:bg-[#F9FAFB] transition"
+              className="w-full flex-1 rounded-lg border border-[#E5E7EB] py-2.5 text-sm font-medium text-[#374151] transition hover:bg-[#F9FAFB]"
             >
               Cancel
             </button>
+
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-[#2563EB] text-white py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition disabled:opacity-50"
+              className="w-full flex-1 rounded-lg bg-[#2563EB] py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
             >
               {loading ? "Saving..." : "Save & Continue"}
             </button>

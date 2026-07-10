@@ -119,31 +119,34 @@ function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        {/* Page header */}
-        <div className="flex justify-between items-start mb-6">
+      <div className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6 sm:py-8">
+        {/* Page Header */}
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-[#111827]">
+            <h1 className="text-2xl font-semibold text-[#111827] sm:text-3xl">
               Available Rides
             </h1>
-            <p className="text-sm text-[#6B7280] mt-1">
+
+            <p className="mt-1 text-sm text-[#6B7280]">
               Find and book rides across campus
             </p>
           </div>
+
           <button
             onClick={handleOfferRide}
-            className="flex items-center gap-2 bg-[#2563EB] text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition shadow-sm"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 sm:w-auto"
           >
-            <span className="text-lg leading-none">+</span> Create Ride
+            <span className="text-lg leading-none">+</span>
+            Create Ride
           </button>
         </div>
 
-        {/* Search bar */}
+        {/* Search Card */}
         <form
           onSubmit={handleSearch}
-          className="bg-white border border-[#E5E7EB] rounded-2xl p-5 mb-6 shadow-sm"
+          className="mb-6 rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm sm:p-5"
         >
-          <div className="flex items-center gap-2 mb-4">
+          <div className="mb-4 flex items-center gap-2">
             <svg
               width="18"
               height="18"
@@ -155,50 +158,56 @@ function HomePage() {
               <circle cx="11" cy="11" r="8" />
               <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
             </svg>
+
             <span className="font-semibold text-[#111827]">Search Rides</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <div>
-              <label className="block text-xs font-medium text-[#6B7280] mb-1">
+              <label className="mb-1 block text-xs font-medium text-[#6B7280]">
                 From
               </label>
+
               <input
                 type="text"
                 placeholder="Enter pickup location"
                 value={fromSearch}
                 onChange={(e) => setFromSearch(e.target.value)}
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
+
             <div>
-              <label className="block text-xs font-medium text-[#6B7280] mb-1">
+              <label className="mb-1 block text-xs font-medium text-[#6B7280]">
                 To
               </label>
+
               <input
                 type="text"
                 placeholder="Enter destination"
                 value={toSearch}
                 onChange={(e) => setToSearch(e.target.value)}
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
+
             <div>
-              <label className="block text-xs font-medium text-[#6B7280] mb-1">
+              <label className="mb-1 block text-xs font-medium text-[#6B7280]">
                 Date
               </label>
+
               <input
                 type="date"
                 value={dateSearch}
                 onChange={(e) => setDateSearch(e.target.value)}
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] text-[#6B7280]"
+                className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm text-[#6B7280] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
           </div>
 
           <button
             type="submit"
-            className="mt-4 bg-[#2563EB] text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+            className="mt-5 w-full rounded-lg bg-[#2563EB] px-6 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 sm:w-auto"
           >
             Search
           </button>
@@ -206,21 +215,21 @@ function HomePage() {
 
         {/* Ride cards */}
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="bg-white border border-[#E5E7EB] rounded-2xl p-6 animate-pulse"
+                className="animate-pulse rounded-2xl border border-[#E5E7EB] bg-white p-5 sm:p-6"
               >
-                <div className="h-4 bg-[#F3F4F6] rounded w-1/2 mb-3" />
-                <div className="h-5 bg-[#F3F4F6] rounded w-3/4 mb-4" />
-                <div className="h-4 bg-[#F3F4F6] rounded w-full mb-2" />
-                <div className="h-10 bg-[#F3F4F6] rounded-xl mt-4" />
+                <div className="mb-3 h-4 w-1/2 rounded bg-[#F3F4F6]" />
+                <div className="mb-4 h-5 w-3/4 rounded bg-[#F3F4F6]" />
+                <div className="mb-2 h-4 w-full rounded bg-[#F3F4F6]" />
+                <div className="mt-4 h-10 rounded-xl bg-[#F3F4F6]" />
               </div>
             ))}
           </div>
         ) : rides.length === 0 ? (
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-12 text-center text-[#9CA3AF]">
+          <div className="rounded-2xl border border-[#E5E7EB] bg-white px-6 py-10 text-center text-[#9CA3AF] sm:p-12">
             <svg
               className="mx-auto mb-3"
               width="40"
@@ -236,15 +245,17 @@ function HomePage() {
                 strokeLinejoin="round"
               />
             </svg>
+
             <p className="font-medium text-[#6B7280]">
               No rides available right now
             </p>
-            <p className="text-sm mt-1">
+
+            <p className="mt-1 text-sm">
               Try a different search or check back later
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {rides.map((ride) => {
               const isOwnRide =
                 ride.driver?._id === user?.id || ride.driver?.id === user?.id;
@@ -256,34 +267,37 @@ function HomePage() {
               return (
                 <div
                   key={ride._id}
-                  className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm hover:shadow-md transition"
+                  className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm transition hover:shadow-md"
                 >
                   {/* Driver row + badge */}
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <p className="text-xs text-[#9CA3AF] font-medium uppercase tracking-wide">
+                  <div className="mb-4 flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium uppercase tracking-wide text-[#9CA3AF]">
                         Driver
                       </p>
-                      <p className="text-[#111827] font-semibold text-base leading-tight mt-0.5">
+
+                      <p className="mt-0.5 truncate text-base font-semibold leading-tight text-[#111827]">
                         {ride.driver?.name ?? "Unknown"}
                       </p>
                     </div>
 
                     {isOwnRide && (
-                      <span className="text-xs bg-[#EFF6FF] text-[#2563EB] px-2.5 py-1 rounded-full font-medium">
+                      <span className="whitespace-nowrap rounded-full bg-[#EFF6FF] px-2.5 py-1 text-xs font-medium text-[#2563EB]">
                         Your ride
                       </span>
                     )}
                   </div>
 
                   {/* Route */}
-                  <div className="flex items-start gap-3 mb-4">
-                    <div>
+                  <div className="mb-5 flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
                       <p className="text-xs text-[#9CA3AF]">From</p>
-                      <p className="text-[#111827] font-semibold text-sm">
+
+                      <p className="break-words text-sm font-semibold text-[#111827]">
                         {ride.from}
                       </p>
                     </div>
+
                     <svg
                       className="mt-4 flex-shrink-0"
                       width="18"
@@ -299,16 +313,18 @@ function HomePage() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <div>
+
+                    <div className="min-w-0 flex-1 text-right">
                       <p className="text-xs text-[#9CA3AF]">To</p>
-                      <p className="text-[#111827] font-semibold text-sm">
+
+                      <p className="break-words text-sm font-semibold text-[#111827]">
                         {ride.to}
                       </p>
                     </div>
                   </div>
 
-                  {/* Meta row: time, fare, seats */}
-                  <div className="flex items-center gap-4 text-sm border-t border-[#F3F4F6] pt-3">
+                  {/* Meta */}
+                  <div className="flex flex-col gap-2 border-t border-[#F3F4F6] pt-3 text-sm sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
                     <div className="flex items-center gap-1 text-[#6B7280]">
                       <svg
                         width="14"
@@ -323,6 +339,7 @@ function HomePage() {
                         <line x1="8" y1="2" x2="8" y2="6" />
                         <line x1="3" y1="10" x2="21" y2="10" />
                       </svg>
+
                       <span className="text-xs">
                         {formatRideTime(ride.rideTime)}
                       </span>
@@ -340,6 +357,7 @@ function HomePage() {
                         <line x1="12" y1="1" x2="12" y2="23" />
                         <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
                       </svg>
+
                       <span className="text-xs font-semibold">
                         ₹{ride.rideFare}
                       </span>
@@ -360,18 +378,18 @@ function HomePage() {
                           strokeLinejoin="round"
                         />
                       </svg>
+
                       <span className="text-xs">
                         {bookedSeats}/{totalSeats} seats
                       </span>
                     </div>
                   </div>
 
-                  {/* Book Ride button — hidden for own rides or completed rides */}
                   {!isOwnRide && ride.availableSeats > 0 && (
                     <button
                       disabled={bookingId === ride._id}
                       onClick={() => handleBooking(ride._id)}
-                      className="mt-4 w-full bg-[#16A34A] text-white py-2.5 rounded-xl text-sm font-medium hover:bg-green-700 transition disabled:opacity-50"
+                      className="mt-5 w-full rounded-xl bg-[#16A34A] py-2.5 text-sm font-medium text-white transition hover:bg-green-700 disabled:opacity-50"
                     >
                       {bookingId === ride._id ? "Booking..." : "Book Ride"}
                     </button>
@@ -390,6 +408,7 @@ function HomePage() {
           onSuccess={handleVehicleSaved}
         />
       )}
+
       {activeModal === "create" && (
         <CreateRideModal onClose={closeModal} onCreated={fetchRides} />
       )}

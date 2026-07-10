@@ -45,16 +45,17 @@ function CreateRideModal({ onClose, onCreated }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3 sm:p-4">
+      <div className="w-full max-w-md rounded-2xl bg-white p-4 shadow-xl sm:p-6 max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-5">
-          <h2 className="text-xl font-semibold text-[#111827]">
+        <div className="mb-5 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-[#111827] sm:text-xl">
             Create New Ride
           </h2>
+
           <button
             onClick={onClose}
-            className="text-[#9CA3AF] hover:text-[#111827] transition text-2xl leading-none w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#F3F4F6]"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-2xl leading-none text-[#9CA3AF] transition hover:bg-[#F3F4F6] hover:text-[#111827]"
           >
             ×
           </button>
@@ -63,9 +64,10 @@ function CreateRideModal({ onClose, onCreated }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* From */}
           <div>
-            <label className="block text-sm font-medium text-[#374151] mb-1">
+            <label className="mb-1 block text-sm font-medium text-[#374151]">
               From
             </label>
+
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]">
                 <svg
@@ -90,22 +92,24 @@ function CreateRideModal({ onClose, onCreated }) {
                   />
                 </svg>
               </span>
+
               <input
                 type="text"
                 placeholder="Pickup location"
                 value={from}
                 onChange={(e) => setFrom(e.target.value)}
                 required
-                className="w-full border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:bg-white"
+                className="w-full rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] py-2.5 pl-9 pr-3 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
           </div>
 
           {/* To */}
           <div>
-            <label className="block text-sm font-medium text-[#374151] mb-1">
+            <label className="mb-1 block text-sm font-medium text-[#374151]">
               To
             </label>
+
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]">
                 <svg
@@ -130,22 +134,24 @@ function CreateRideModal({ onClose, onCreated }) {
                   />
                 </svg>
               </span>
+
               <input
                 type="text"
                 placeholder="Destination"
                 value={to}
                 onChange={(e) => setTo(e.target.value)}
                 required
-                className="w-full border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:bg-white"
+                className="w-full rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] py-2.5 pl-9 pr-3 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
           </div>
 
           {/* Ride Time */}
           <div>
-            <label className="block text-sm font-medium text-[#374151] mb-1">
+            <label className="mb-1 block text-sm font-medium text-[#374151]">
               Ride Time
             </label>
+
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]">
                 <svg
@@ -162,21 +168,23 @@ function CreateRideModal({ onClose, onCreated }) {
                   <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
               </span>
+
               <input
                 type="datetime-local"
                 value={rideTime}
                 onChange={(e) => setRideTime(e.target.value)}
                 required
-                className="w-full border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:bg-white"
+                className="w-full rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] py-2.5 pl-9 pr-3 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
           </div>
 
           {/* Fare */}
           <div>
-            <label className="block text-sm font-medium text-[#374151] mb-1">
+            <label className="mb-1 block text-sm font-medium text-[#374151]">
               Fare (₹)
             </label>
+
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]">
                 <svg
@@ -191,6 +199,7 @@ function CreateRideModal({ onClose, onCreated }) {
                   <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
                 </svg>
               </span>
+
               <input
                 type="number"
                 min="0"
@@ -199,16 +208,17 @@ function CreateRideModal({ onClose, onCreated }) {
                 value={rideFare}
                 onChange={(e) => setRideFare(e.target.value)}
                 required
-                className="w-full border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:bg-white"
+                className="w-full rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] py-2.5 pl-9 pr-3 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
           </div>
 
           {/* Available Seats */}
           <div>
-            <label className="block text-sm font-medium text-[#374151] mb-1">
+            <label className="mb-1 block text-sm font-medium text-[#374151]">
               Available Seats
             </label>
+
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]">
                 <svg
@@ -226,6 +236,7 @@ function CreateRideModal({ onClose, onCreated }) {
                   />
                 </svg>
               </span>
+
               <input
                 type="number"
                 min="1"
@@ -234,24 +245,25 @@ function CreateRideModal({ onClose, onCreated }) {
                 value={availableSeats}
                 onChange={(e) => setAvailableSeats(e.target.value)}
                 required
-                className="w-full border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:bg-white"
+                className="w-full rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] py-2.5 pl-9 pr-3 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-1">
+          <div className="flex flex-col gap-3 pt-2 sm:flex-row">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 border border-[#E5E7EB] text-[#374151] py-2.5 rounded-xl text-sm font-medium hover:bg-[#F9FAFB] transition"
+              className="w-full flex-1 rounded-xl border border-[#E5E7EB] py-2.5 text-sm font-medium text-[#374151] transition hover:bg-[#F9FAFB]"
             >
               Cancel
             </button>
+
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-[#2563EB] text-white py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition disabled:opacity-50"
+              className="w-full flex-1 rounded-xl bg-[#2563EB] py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
             >
               {loading ? "Creating..." : "Create Ride"}
             </button>

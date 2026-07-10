@@ -67,9 +67,9 @@ function MyBookings() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-4  sm:px-6 py-6 sm:py-8">
         {/* Header */}
-        <div className="mb-6">
+        <div className="mb-6 text-center sm:text-left">
           <h1 className="text-2xl font-semibold text-[#111827]">
             {" "}
             My Bookings
@@ -79,11 +79,11 @@ function MyBookings() {
           </p>
         </div>
         {loading ? (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
             {[1, 2].map((i) => (
               <div
                 key={i}
-                className="bg-white border border-[#E5E7EB] rounded-2xl p-6 animate-pulse max-w-sm"
+                className="bg-white border border-[#E5E7EB] rounded-2xl p-5 sm:p-6 animate-pulse "
               >
                 <div className="h-4 bg-[#F3F4F6] rounded w-1/4 mb-2" />
                 <div className="h-5 bg-[#F3F4F6] rounded w-1/2 mb-4" />
@@ -93,7 +93,7 @@ function MyBookings() {
           </div>
         ) : rides.length === 0 ? (
           // Empty state matching screenshot
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-16 text-center">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl px-6 py-10 sm:p-16 text-center">
             <div className="w-16 h-16 bg-[#F0FDF4] rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
                 width="28"
@@ -122,7 +122,7 @@ function MyBookings() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
             {rides.map((ride) => {
               const totalSeats =
                 ride.availableSeats + (ride.passengers?.length ?? 0);
@@ -136,28 +136,28 @@ function MyBookings() {
                   className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm hover:shadow-md transition"
                 >
                   {/* Driver */}
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
+                  <div className="flex justify-between items-start gap-3 mb-4">
+                    <div className="min-w-0">
                       <p className="text-xs text-[#9CA3AF] font-medium">
                         Driver
                       </p>
-                      <p className="text-[#111827] font-semibold text-base leading-tight mt-0.5">
+                      <p className="text-[#111827] font-semibold text-base leading-tight mt-0.5 truncate">
                         {ride.driver?.name ?? "Unknown"}
                       </p>
                     </div>
 
                     {isCompleted && (
-                      <span className=" text-xs- bg-[#F3F4F6] text-[#6B7280] px-2.5 py-1 rounded-full font-medium ">
+                      <span className="whitespace-nowrap rounded-full bg-[#F3F4F6] text-[#6B7280] px-2.5 py-1 text-xs font-medium">
                         Completed
                       </span>
                     )}
                   </div>
 
                   {/* Route */}
-                  <div className="flex items-start gap-3 mb-4">
-                    <div>
+                  <div className="flex items-start justify-between gap-2 mb-5">
+                    <div className="min-w-0 flex-1">
                       <p className="text-xs text-[#9CA3AF]">From</p>
-                      <p className="text-[#111827] font-semibold text-sm">
+                      <p className="text-[#111827] font-semibold text-sm break-words">
                         {ride.from}
                       </p>
                     </div>
@@ -176,16 +176,16 @@ function MyBookings() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <div>
+                    <div className="min-w-0 flex-1 text-right">
                       <p className="text-xs text-[#9CA3AF]">To</p>
-                      <p className="text-[#111827] font-semibold text-sm">
+                      <p className="text-[#111827] font-semibold text-sm break-words">
                         {ride.to}
                       </p>
                     </div>
                   </div>
 
                   {/* Meta row */}
-                  <div className="flex items-center gap-4 text-sm border-t border-[#F3F4F6] pt-3 mb-4">
+                  <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-4 text-sm border-t border-[#F3F4F6] pt-3 mb-4">
                     <div className="flex items-center gap-1 text-[#6B7280]">
                       <svg
                         width="14"
@@ -255,7 +255,7 @@ function MyBookings() {
                     <button
                       onClick={() => handleCancel(ride._id)}
                       disabled={cancellingId === ride._id}
-                      className="w-full bg-[#EF4444] text-white py-2.5 rounded-xl text-sm font-medium hover:bg-red-600 transition disabled:opacity-50"
+                      className="w-full bg-[#EF4444] text-white py-3 rounded-xl text-sm font-medium hover:bg-red-600 transition disabled:opacity-50"
                     >
                       {cancellingId === ride._id
                         ? "Cancelling..."

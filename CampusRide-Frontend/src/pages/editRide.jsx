@@ -6,7 +6,7 @@ import { showError, showSuccess } from "../utility/toast";
 import { useAuth } from "../context/AuthContext";
 
 function EditRide() {
-  const { id } = useParams(); // ✅ correct
+  const { id } = useParams();
   const navigate = useNavigate();
   const { token } = useAuth();
 
@@ -17,13 +17,11 @@ function EditRide() {
   const [rideTime, setRideTime] = useState("");
   const [loading, setLoading] = useState(false);
 
-  //  Fetch ride
   useEffect(() => {
     const fetchRide = async () => {
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/rides/${id}`,
-          //
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -46,14 +44,13 @@ function EditRide() {
     fetchRide();
   }, [id]);
 
-  //  Update ride
   const handleUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       await axios.patch(
-        `${import.meta.env.VITE_API_URL}/api/rides/edit/${id}`, // ⚠️ check route
+        `${import.meta.env.VITE_API_URL}/api/rides/edit/${id}`,
         {
           from,
           to,
@@ -73,90 +70,93 @@ function EditRide() {
     } catch (error) {
       showError(error.response?.data?.message || "Update Failed");
     }
+
     setLoading(false);
   };
 
-  // ✅ UI RETURN (correct place)
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
-      <div className="w-full max-w-xl bg-white p-6 rounded-2xl shadow-sm border border-[#E5E7EB]">
-        <h2 className="text-2xl font-semibold text-[#111827] mb-6">
+    <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center px-4 py-6 sm:px-6">
+      <div className="w-full max-w-xl rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm sm:p-8">
+        <h2 className="mb-6 text-center text-2xl font-semibold text-[#111827] sm:text-left">
           Edit Ride
         </h2>
 
         <form onSubmit={handleUpdate} className="space-y-5">
           {/* From */}
           <div>
-            <label className="block text-sm font-medium text-[#4B5563] mb-1">
+            <label className="mb-1 block text-sm font-medium text-[#4B5563]">
               From
             </label>
+
             <input
               value={from}
               onChange={(e) => setFrom(e.target.value)}
               placeholder="e.g. Nashik"
-              className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
 
           {/* To */}
           <div>
-            <label className="block text-sm font-medium text-[#4B5563] mb-1">
+            <label className="mb-1 block text-sm font-medium text-[#4B5563]">
               To
             </label>
+
             <input
               value={to}
               onChange={(e) => setTo(e.target.value)}
               placeholder="e.g. Mumbai"
-              className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
 
           {/* Seats */}
           <div>
-            <label className="block text-sm font-medium text-[#4B5563] mb-1">
+            <label className="mb-1 block text-sm font-medium text-[#4B5563]">
               Available Seats
             </label>
+
             <input
               type="number"
               min="1"
               value={availableSeats}
               onChange={(e) => setAvailableSeats(e.target.value)}
-              className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
 
           {/* Fare */}
           <div>
-            <label className="block text-sm font-medium text-[#4B5563] mb-1">
+            <label className="mb-1 block text-sm font-medium text-[#4B5563]">
               Ride Fare (₹)
             </label>
+
             <input
               type="number"
               value={rideFare}
               onChange={(e) => setRideFare(e.target.value)}
-              className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
 
           {/* Time */}
           <div>
-            <label className="block text-sm font-medium text-[#4B5563] mb-1">
+            <label className="mb-1 block text-sm font-medium text-[#4B5563]">
               Ride Time
             </label>
+
             <input
               type="datetime-local"
               value={rideTime}
               onChange={(e) => setRideTime(e.target.value)}
-              placeholder="e.g. 8:00 AM"
-              className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
 
-          {/* Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#2563EB] text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50"
+            className="w-full rounded-xl bg-[#2563EB] py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
           >
             {loading ? "Updating..." : "Update Ride"}
           </button>

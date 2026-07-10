@@ -34,15 +34,15 @@ export default function Login() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4"
+      className="min-h-screen flex items-center justify-center px-4 py-6 sm:px-6"
       style={{
         background: "linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)",
       }}
     >
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl sm:p-8">
         {/* Icon */}
-        <div className="flex justify-center mb-5">
-          <div className="w-14 h-14 bg-[#2563EB] rounded-xl flex items-center justify-center shadow-md">
+        <div className="mb-5 flex justify-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#2563EB] shadow-md">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
               <path
                 d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h1l2-3h12l2 3h1a2 2 0 012 2v6a2 2 0 01-2 2h-2"
@@ -55,32 +55,37 @@ export default function Login() {
           </div>
         </div>
 
-        <h2 className="text-2xl font-semibold text-[#111827] text-center mb-1">
+        <h2 className="mb-1 text-center text-2xl font-semibold text-[#111827] sm:text-3xl">
           Welcome Back
         </h2>
-        <p className="text-sm text-[#9CA3AF] text-center mb-6">
+
+        <p className="mb-6 text-center text-sm text-[#9CA3AF]">
           Sign in to continue to CampusRide
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-[#374151] mb-1">
+            <label className="mb-1 block text-sm font-medium text-[#374151]">
               Email Address
             </label>
+
             <input
               type="email"
               placeholder="you@campus.edu"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:bg-white"
+              className="w-full rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
 
+          {/* Password */}
           <div>
-            <label className="block text-sm font-medium text-[#374151] mb-1">
+            <label className="mb-1 block text-sm font-medium text-[#374151]">
               Password
             </label>
+
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -88,12 +93,13 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:bg-white pr-10"
+                className="w-full rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 pr-10 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               />
+
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#4B5563]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] transition hover:text-[#4B5563]"
               >
                 {showPassword ? (
                   <svg
@@ -134,17 +140,17 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#2563EB] text-white py-3 rounded-xl text-sm font-medium hover:bg-blue-700 transition disabled:opacity-50 mt-2"
+            className="mt-2 w-full rounded-xl bg-[#2563EB] py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
-        <p className="mt-5 text-sm text-[#6B7280] text-center">
+        <p className="mt-6 text-center text-sm text-[#6B7280]">
           Don't have an account?{" "}
           <span
             onClick={() => navigate("/signup")}
-            className="text-[#2563EB] cursor-pointer font-medium hover:underline"
+            className="cursor-pointer font-medium text-[#2563EB] hover:underline"
           >
             Sign up
           </span>

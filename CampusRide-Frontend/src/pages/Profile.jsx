@@ -91,30 +91,32 @@ function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB]">
-      <div className="max-w-4xl mx-auto px-6 py-8">
+    <div className="min-h-screen bg-[#F9FAFB] px-3 sm:px-4">
+      <div className="max-w-5xl mx-auto py-5 sm:py-6 md:py-8">
         {/* Page title */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-[#111827]">Profile</h1>
-          <p className="text-sm text-[#6B7280] mt-1">
+        <div className=" mb-5 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl font-semibold text-[#111827]">
+            Profile
+          </h1>
+          <p className="mt-1 text-sm text-[#6B7280]">
             Manage your account information
           </p>
         </div>
 
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden shadow-sm">
+        <div className="overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-sm">
           {/* Blue gradient header banner */}
           <div
-            className="h-28"
+            className="h-28 sm:h-28"
             style={{
               background: "linear-gradient(135deg, #2563EB 0%, #4F46E5 100%)",
             }}
           />
 
           {/* Avatar + name row */}
-          <div className="px-6 pb-6">
-            <div className="flex justify-between items-end -mt-12 mb-5">
+          <div className="px-4 sm:px-6 pb-5 sm:pb-6">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 -mt-10 sm:-mt-12 mb-5">
               <div
-                className="w-20 h-20 rounded-xl flex items-center justify-center text-white text-3xl font-semibold shadow-md"
+                className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-xl text-2xl sm:text-3xl font-semibold text-white shadow-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #2563EB 0%, #4F46E5 100%)",
@@ -125,7 +127,7 @@ function Profile() {
               {!isEditing && (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="flex items-center gap-2 bg-[#2563EB] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+                  className="flex items-center justify-center gap-2 w-full sm:w-auto bg-[#2563EB] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition"
                 >
                   <svg
                     width="14"
@@ -146,14 +148,16 @@ function Profile() {
               )}
             </div>
 
-            <h2 className="text-xl font-semibold text-[#111827]">
+            <h2 className="text-xl sm:text-2xl font-semibold text-[#111827]">
               {user?.name}
             </h2>
-            <p className="text-sm text-[#9CA3AF]">Member since {memberSince}</p>
+            <p className="text-sm text-[#9CA3AF] mt-1">
+              Member since {memberSince}
+            </p>
 
             {/* Stats cards */}
-            <div className="grid grid-cols-2 gap-4 mt-5">
-              <div className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-xl p-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
+              <div className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-xl p-5">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-8 h-8 bg-[#2563EB] rounded-lg flex items-center justify-center">
                     <svg
@@ -183,7 +187,7 @@ function Profile() {
                 </p>
               </div>
 
-              <div className="bg-[#F0FDF4] border border-[#BBF7D0] rounded-xl p-4">
+              <div className="bg-[#F0FDF4] border border-[#BBF7D0] rounded-xl p-5">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-8 h-8 bg-[#16A34A] rounded-lg flex items-center justify-center">
                     <svg
@@ -216,9 +220,9 @@ function Profile() {
 
             {isEditing ? (
               /* ---- EDIT MODE ---- */
-              <form onSubmit={handleSave} className="space-y-5">
+              <form onSubmit={handleSave} className="space-y-6">
                 {/* Name + Email */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-[#374151] mb-1">
                       Full Name
@@ -227,7 +231,7 @@ function Profile() {
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full border border-[#E5E7EB] rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                      className="w-full border border-[#E5E7EB] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                     />
                   </div>
                   <div>
@@ -283,7 +287,7 @@ function Profile() {
                     Add your vehicle details (optional, required to offer rides)
                   </p>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-[#374151] mb-1">
                         Make
@@ -293,7 +297,7 @@ function Profile() {
                         value={make}
                         onChange={(e) => setMake(e.target.value)}
                         placeholder="e.g. Toyota"
-                        className="w-full border border-[#E5E7EB] rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                        className="w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm transition-colors focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20"
                       />
                     </div>
                     <div>
@@ -305,7 +309,7 @@ function Profile() {
                         value={model}
                         onChange={(e) => setModel(e.target.value)}
                         placeholder="e.g. Camry"
-                        className="w-full border border-[#E5E7EB] rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                        className="w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm transition-colors focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20"
                       />
                     </div>
                     <div>
@@ -319,7 +323,7 @@ function Profile() {
                         value={capacity}
                         onChange={(e) => setCapacity(e.target.value)}
                         placeholder="Seats"
-                        className="w-full border border-[#E5E7EB] rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                        className="w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm transition-colors focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20"
                       />
                     </div>
                     <div>
@@ -333,25 +337,25 @@ function Profile() {
                           setLicensePlate(e.target.value.toUpperCase())
                         }
                         placeholder="e.g. MH12 AB1234"
-                        className="w-full border border-[#E5E7EB] rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] uppercase"
+                        className="w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm uppercase transition-colors focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Save / Cancel buttons */}
-                <div className="flex gap-3 pt-2">
+                <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
                   <button
                     type="button"
                     onClick={handleCancelEdit}
-                    className="flex-1 flex items-center justify-center gap-2 border border-[#E5E7EB] text-[#374151] py-2.5 rounded-xl text-sm font-medium hover:bg-[#F9FAFB] transition"
+                    className="flex-1 flex items-center justify-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-medium text-[#374151] transition hover:bg-[#F9FAFB]"
                   >
                     <span>×</span> Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={saving}
-                    className="flex-1 flex items-center justify-center gap-2 bg-[#2563EB] text-white py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition disabled:opacity-50"
+                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-[#2563EB] px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <svg
                       width="14"
@@ -373,12 +377,12 @@ function Profile() {
               </form>
             ) : (
               /* ---- VIEW MODE ---- */
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div>
                   <h3 className="text-base font-semibold text-[#111827] mb-4">
                     Personal Information
                   </h3>
-                  <div className="grid grid-cols-2 gap-y-4 gap-x-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                       <p className="text-xs text-[#9CA3AF] font-medium mb-1">
                         Full Name
@@ -478,7 +482,7 @@ function Profile() {
                           Vehicle Information
                         </h3>
                       </div>
-                      <div className="grid grid-cols-2 gap-y-3 gap-x-6 text-sm">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm">
                         <div>
                           <p className="text-xs text-[#9CA3AF]">Make</p>
                           <p className="font-medium text-[#111827]">
@@ -513,7 +517,7 @@ function Profile() {
                 {!user?.vehicleDetails && (
                   <>
                     <hr className="border-[#F3F4F6]" />
-                    <div className="bg-[#FFF7ED] border border-[#FED7AA] rounded-xl p-4">
+                    <div className="rounded-xl border border-[#FED7AA] bg-[#FFF7ED] p-5">
                       <p className="text-sm font-medium text-[#92400E]">
                         No vehicle added yet
                       </p>
@@ -522,7 +526,7 @@ function Profile() {
                       </p>
                       <button
                         onClick={() => setIsEditing(true)}
-                        className="mt-3 text-xs font-medium text-[#D97706] underline"
+                        className="mt-4 inline-flex items-center text-sm font-medium text-[#D97706] transition hover:text-[#B45309]"
                       >
                         Add vehicle →
                       </button>

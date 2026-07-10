@@ -57,6 +57,7 @@ export default function App() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/my-rides"
           element={
