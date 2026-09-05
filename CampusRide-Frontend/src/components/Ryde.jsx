@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { BotIcon } from "lucide-react";
+import { BotIcon, MessageSquareCode } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import axios from "axios";
 
 function Ryde() {
   const RydeAvatar = () => {
@@ -24,7 +25,7 @@ function Ryde() {
   ]);
   const [input, setInput] = useState("");
 
-  //Scroll to new message
+  // Scroll to new message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -46,21 +47,17 @@ function Ryde() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/chat`,
+        {
           messages: updatedMessages,
-        }),
-      });
+        },
+      );
 
-      const data = await response.json();
       console.log("Ryde API response:", data);
 
-      if (!response.ok) {
-        throw new Error(data.error || "Something went wrong.");
+      if (!data.reply) {
+        throw new Error("No response from Ryde.");
       }
 
       const assistantMessage = {
@@ -75,7 +72,9 @@ function Ryde() {
       const errorMessage = {
         role: "assistant",
         content:
-          error.message || "Sorry, something went wrong. Please try again.",
+          error.response?.data?.error ||
+          error.message ||
+          "Sorry, something went wrong. Please try again.",
       };
 
       setMessages((prevMessages) => [...prevMessages, errorMessage]);
@@ -87,11 +86,11 @@ function Ryde() {
   return (
     <div>
       {isOpen ? (
-        <div className="fixed bottom-6 right-6 w-96 bg-white rounded-2xl shadow-xl border">
+        <div className="fixed bottom-4 left-4 right-4 z-50 max-h-[calc(100vh-2rem)] rounded-2xl border bg-white shadow-xl sm:bottom-6 sm:left-auto sm:right-6 sm:w-96">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b">
+          <div className="flex items-center justify-between border-b p-4">
             <div>
-              <h2 className="font-semibold text-lg">Ryde</h2>
+              <h2 className="text-lg font-semibold">Ryde</h2>
               <p className="text-sm text-gray-500">Your CampusRide assistant</p>
             </div>
 
@@ -99,7 +98,7 @@ function Ryde() {
           </div>
 
           {/* Messages */}
-          <div className="h-96 p-4 overflow-y-auto">
+          <div className="h-[60vh] max-h-96 overflow-y-auto p-4">
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -110,7 +109,7 @@ function Ryde() {
                 {message.role === "assistant" && <RydeAvatar />}
 
                 <div
-                  className={`rounded-xl p-3 max-w-[80%] ${
+                  className={`max-w-[80%] rounded-xl p-3 ${
                     message.role === "user"
                       ? "bg-blue-500 text-white"
                       : "bg-gray-100 text-gray-800"
@@ -123,13 +122,13 @@ function Ryde() {
                       ),
 
                       ol: ({ children }) => (
-                        <ol className="list-decimal ml-5 space-y-1">
+                        <ol className="ml-5 list-decimal space-y-1">
                           {children}
                         </ol>
                       ),
 
                       ul: ({ children }) => (
-                        <ul className="list-disc ml-5 space-y-1">{children}</ul>
+                        <ul className="ml-5 list-disc space-y-1">{children}</ul>
                       ),
 
                       strong: ({ children }) => (
@@ -142,22 +141,24 @@ function Ryde() {
                 </div>
               </div>
             ))}
+
             {isLoading && (
-              <div className="bg-gray-100 rounded-xl p-3 w-fit">
+              <div className="w-fit rounded-xl bg-gray-100 p-3">
                 Ryde is thinking...
               </div>
             )}
+
             <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}
-          <div className="flex gap-2 p-4 border-t">
+          <div className="flex gap-2 border-t p-4">
             <input
               type="text"
               placeholder="Ask Ryde..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="flex-1 border rounded-xl px-3 py-2 outline-none"
+              className="min-w-0 flex-1 rounded-xl border px-3 py-2 outline-none"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   handleSend();
@@ -168,15 +169,18 @@ function Ryde() {
             <button
               onClick={handleSend}
               disabled={!input.trim() || isLoading}
-              className="disabled:opacity-50 disabled:cursor-not-allowed"
+              className="shrink-0 rounded-xl px-3 py-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Send
             </button>
           </div>
         </div>
       ) : (
-        <button onClick={() => setIsOpen(true)}>
-          <BotIcon />
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 z-50"
+        >
+          <MessageSquareCode />
         </button>
       )}
     </div>
