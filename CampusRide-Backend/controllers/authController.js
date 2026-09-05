@@ -37,22 +37,13 @@ const registerController = async (req, res) => {
         vehicleDetails: newUser.vehicleDetails, // null on register, always
       },
     });
-  }//Temporary block 
-  catch (error) {
-    console.log("REGISTER ERROR FULL:", JSON.stringify(error, null, 2));
-    console.log("REGISTER ERROR MESSAGE:", error.message);
+  } catch (error) {
+    console.log("Register error", error);
     res.status(500).json({
       success: false,
-      message: error.message, // ← send actual error to frontend
+      message: "Registration failed. Please try again",
     });
   }
-  // } catch (error) {
-  //   console.log("Register error", error);
-  //   res.status(500).json({
-  //     success: false,
-  //     message: "Registration failed. Please try again",
-  //   });
-  // }
 };
 
 // LOGIN CONTROLLER
@@ -63,7 +54,7 @@ const loginController = async (req, res) => {
     //Find user in DB using email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({
+      return res.status(401).json({
         success: false,
         message: "No account found with this email. Please register.",
       });

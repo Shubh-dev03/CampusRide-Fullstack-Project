@@ -21,12 +21,10 @@ const chatRoute = async (req, res) => {
       return res.status(400).json({ error: "Invalid message format." });
     }
 
-  
     const contents = messages.slice(-20).map((msg) => ({
       role: msg.role, // "user" or "assistant" — Groq accepts both as-is
       content: msg.content.trim(),
     }));
-
 
     if (contents[contents.length - 1].role !== "user") {
       return res
@@ -34,17 +32,12 @@ const chatRoute = async (req, res) => {
         .json({ error: "Last message must be from the user." });
     }
 
-
     const response = await client.chat.completions.create({
-      model: "llama-3.3-70b-versatile", // free and fast on Groq
+      model: "openai/gpt-oss-120b", // free and fast on Groq
       max_tokens: 1024,
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        ...contents,
-      ],
+      messages: [{ role: "system", content: SYSTEM_PROMPT }, ...contents],
     });
 
-  
     const reply = response.choices?.[0]?.message?.content;
 
     // Edge case: empty reply
