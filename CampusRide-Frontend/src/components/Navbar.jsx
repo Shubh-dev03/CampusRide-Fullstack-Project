@@ -77,9 +77,10 @@ function Navbar() {
                 </span>
               </div>
 
-              <span className="hidden text-sm font-medium text-[#111827] sm:block">
-                {user?.name ?? "User"}
-              </span>
+              <span
+                className="hidden text-sm font-medium text-[#111827] sm:block"
+                onClick={() => navigate("/profile")}
+              ></span>
             </div>
 
             <button
