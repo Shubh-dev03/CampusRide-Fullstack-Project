@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { BotIcon, MessageSquareCode } from "lucide-react";
+import { BotIcon, MessageCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
 
@@ -178,9 +178,9 @@ function Ryde() {
       ) : (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50"
+          className="fixed bottom-8 right-10 z-50 "
         >
-          <MessageSquareCode />
+          <MessageCircle className="text-blue-500 border-2px" />
         </button>
       )}
     </div>
