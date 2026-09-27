@@ -62,7 +62,7 @@ const getAllRides = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "Rides fetched successfully",
-    data: activeRidesides,
+    data: activeRides,
   });
 });
 
