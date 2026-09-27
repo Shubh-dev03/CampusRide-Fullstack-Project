@@ -3,10 +3,10 @@ import toast from "react-hot-toast";
 export const showSuccess = (message) => {
   toast.success(message, {
     style: {
-      border: "1px solid #10B981",
+      border: "1px solid #6FA77A",
     },
     iconTheme: {
-      primary: "#10B981",
+      primary: "#6FA77A",
       secondary: "#fff",
     },
   });
@@ -15,10 +15,10 @@ export const showSuccess = (message) => {
 export const showError = (message) => {
   toast.error(message, {
     style: {
-      border: "1px solid #EF4444",
+      border: "1px solid #C15C4C",
     },
     iconTheme: {
-      primary: "#EF4444",
+      primary: "#C15C4C",
       secondary: "#fff",
     },
   });

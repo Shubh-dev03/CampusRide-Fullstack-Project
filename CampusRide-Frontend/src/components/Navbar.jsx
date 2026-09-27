@@ -43,7 +43,7 @@ function Navbar() {
               className="flex h-8 w-8 items-center justify-center rounded-lg"
               style={{
                 background:
-                  "linear-gradient(135deg, #179eff 0%, #5b92ff 100%)",
+                  "linear-gradient(135deg, #3D8F86 0%, #2F6F68 100%)",
               }}
             >
               <svg

@@ -3,7 +3,7 @@ import Ryde from "./Ryde";
 
 function Layout({ children }) {
   return (
-    <div className="min-h-screen bg-[#F9FAFB]">
+    <div className="min-h-screen bg-surface dark:bg-surface-dark">
       <Navbar />
 
       <main className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8">

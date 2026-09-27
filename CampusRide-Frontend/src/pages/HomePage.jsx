@@ -1,36 +1,30 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
+import { Search, ArrowRight, Clock, Wallet, Users, CarFront } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { showError, showSuccess } from "../utility/toast";
+import { formatRideTime } from "../utility/formatDate";
 import CreateRideModal from "../components/CreateRideModal";
 import VehicleDetailsModal from "../components/VehicleDetailsModel";
-
-// Formats "2024-04-18T09:00" → "Apr 18, 09:00"
-const formatRideTime = (rideTime) => {
-  if (!rideTime) return "";
-  const date = new Date(rideTime);
-  if (isNaN(date)) return rideTime;
-  return (
-    date.toLocaleDateString("en-US", { month: "short", day: "numeric" }) +
-    ", " +
-    date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    })
-  );
-};
+import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
+import Badge from "../components/ui/Badge";
+import EmptyState from "../components/ui/EmptyState";
+import { RideCardSkeleton } from "../components/ui/Skeleton";
 
 function HomePage() {
   const { token, user, canOfferRide } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [rides, setRides] = useState([]);
   const [loading, setLoading] = useState(true);
   const [bookingId, setBookingId] = useState(null);
 
-  // Search state
-  const [fromSearch, setFromSearch] = useState("");
-  const [toSearch, setToSearch] = useState("");
+  // Search state — prefilled from ?from=&to= if the visitor searched on the
+  // landing page before signing in (see LandingPage.jsx + login.jsx)
+  const [fromSearch, setFromSearch] = useState(searchParams.get("from") || "");
+  const [toSearch, setToSearch] = useState(searchParams.get("to") || "");
   const [dateSearch, setDateSearch] = useState("");
 
   // Modal state
@@ -53,14 +47,12 @@ function HomePage() {
         : `${import.meta.env.VITE_API_URL}/api/rides`;
 
       const res = await axios.get(url);
-      // Changes Below
 
       const activeRides = res.data.data.filter(
         (ride) => new Date(ride.rideTime) > new Date(),
       );
 
       setRides(activeRides);
-      // Changes above
     } catch (error) {
       console.log(error);
       showError("Failed to fetch rides");
@@ -71,6 +63,11 @@ function HomePage() {
 
   useEffect(() => {
     fetchRides();
+    // Clean the handed-off ?from=&to= out of the URL once it's been read into state
+    if (searchParams.get("from") || searchParams.get("to")) {
+      setSearchParams({}, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSearch = (e) => {
@@ -118,288 +115,176 @@ function HomePage() {
   const closeModal = () => setActiveModal(null);
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB]">
-      <div className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6 sm:py-8">
-        {/* Page Header */}
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-[#111827] sm:text-3xl">
-              Available Rides
-            </h1>
-
-            <p className="mt-1 text-sm text-[#6B7280]">
-              Find and book rides across campus
-            </p>
-          </div>
-
-          <button
-            onClick={handleOfferRide}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 sm:w-auto"
-          >
-            <span className="text-lg leading-none">+</span>
-            Create Ride
-          </button>
+    <div className="mx-auto w-full max-w-6xl">
+      {/* Page Header */}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-ink dark:text-ink-dark sm:text-3xl">
+            Available Rides
+          </h1>
+          <p className="mt-1 text-sm text-ink-soft dark:text-ink-dark-soft">
+            Find and book rides across campus
+          </p>
         </div>
 
-        {/* Search Card */}
-        <form
-          onSubmit={handleSearch}
-          className="mb-6 rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm sm:p-5"
-        >
-          <div className="mb-4 flex items-center gap-2">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#9CA3AF"
-              strokeWidth="1.8"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
-            </svg>
+        <Button onClick={handleOfferRide} className="w-full sm:w-auto">
+          <span className="text-lg leading-none">+</span>
+          Create Ride
+        </Button>
+      </div>
 
-            <span className="font-semibold text-[#111827]">Search Rides</span>
+      {/* Search Card */}
+      <Card className="mb-6 p-4 sm:p-5">
+        <form onSubmit={handleSearch}>
+          <div className="mb-4 flex items-center gap-2">
+            <Search className="h-[18px] w-[18px] text-ink-soft dark:text-ink-dark-soft" />
+            <span className="font-semibold text-ink dark:text-ink-dark">
+              Search Rides
+            </span>
           </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <div>
-              <label className="mb-1 block text-xs font-medium text-[#6B7280]">
+              <label className="mb-1 block text-xs font-medium text-ink-soft dark:text-ink-dark-soft">
                 From
               </label>
-
               <input
                 type="text"
                 placeholder="Enter pickup location"
                 value={fromSearch}
                 onChange={(e) => setFromSearch(e.target.value)}
-                className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                className="w-full rounded-control border border-border bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:ring-2 focus:ring-primary/25 dark:border-border-dark dark:bg-surface-dark dark:text-ink-dark"
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-xs font-medium text-[#6B7280]">
+              <label className="mb-1 block text-xs font-medium text-ink-soft dark:text-ink-dark-soft">
                 To
               </label>
-
               <input
                 type="text"
                 placeholder="Enter destination"
                 value={toSearch}
                 onChange={(e) => setToSearch(e.target.value)}
-                className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                className="w-full rounded-control border border-border bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:ring-2 focus:ring-primary/25 dark:border-border-dark dark:bg-surface-dark dark:text-ink-dark"
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-xs font-medium text-[#6B7280]">
+              <label className="mb-1 block text-xs font-medium text-ink-soft dark:text-ink-dark-soft">
                 Date
               </label>
-
               <input
                 type="date"
                 value={dateSearch}
                 onChange={(e) => setDateSearch(e.target.value)}
-                className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2.5 text-sm text-[#6B7280] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                className="w-full rounded-control border border-border bg-surface px-3 py-2.5 text-sm text-ink-soft outline-none focus:ring-2 focus:ring-primary/25 dark:border-border-dark dark:bg-surface-dark dark:text-ink-dark-soft"
               />
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="mt-5 w-full rounded-lg bg-[#2563EB] px-6 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 sm:w-auto"
-          >
+          <Button type="submit" className="mt-5 w-full sm:w-auto">
             Search
-          </button>
+          </Button>
         </form>
+      </Card>
 
-        {/* Ride cards */}
-        {loading ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="animate-pulse rounded-2xl border border-[#E5E7EB] bg-white p-5 sm:p-6"
+      {/* Ride cards */}
+      {loading ? (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <RideCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : rides.length === 0 ? (
+        <EmptyState
+          icon={CarFront}
+          title="No rides available right now"
+          description="Try a different search or check back later"
+        />
+      ) : (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {rides.map((ride) => {
+            const isOwnRide =
+              ride.driver?._id === user?.id || ride.driver?.id === user?.id;
+
+            const totalSeats =
+              ride.availableSeats + (ride.passengers?.length ?? 0);
+            const bookedSeats = ride.passengers?.length ?? 0;
+
+            return (
+              <Card
+                key={ride._id}
+                className="p-5 transition hover:shadow-raised"
               >
-                <div className="mb-3 h-4 w-1/2 rounded bg-[#F3F4F6]" />
-                <div className="mb-4 h-5 w-3/4 rounded bg-[#F3F4F6]" />
-                <div className="mb-2 h-4 w-full rounded bg-[#F3F4F6]" />
-                <div className="mt-4 h-10 rounded-xl bg-[#F3F4F6]" />
-              </div>
-            ))}
-          </div>
-        ) : rides.length === 0 ? (
-          <div className="rounded-2xl border border-[#E5E7EB] bg-white px-6 py-10 text-center text-[#9CA3AF] sm:p-12">
-            <svg
-              className="mx-auto mb-3"
-              width="40"
-              height="40"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#D1D5DB"
-              strokeWidth="1.5"
-            >
-              <path
-                d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h1l2-3h12l2 3h1a2 2 0 012 2v6a2 2 0 01-2 2h-2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-
-            <p className="font-medium text-[#6B7280]">
-              No rides available right now
-            </p>
-
-            <p className="mt-1 text-sm">
-              Try a different search or check back later
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {rides.map((ride) => {
-              const isOwnRide =
-                ride.driver?._id === user?.id || ride.driver?.id === user?.id;
-
-              const totalSeats =
-                ride.availableSeats + (ride.passengers?.length ?? 0);
-              const bookedSeats = ride.passengers?.length ?? 0;
-
-              return (
-                <div
-                  key={ride._id}
-                  className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm transition hover:shadow-md"
-                >
-                  {/* Driver row + badge */}
-                  <div className="mb-4 flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="text-xs font-medium uppercase tracking-wide text-[#9CA3AF]">
-                        Driver
-                      </p>
-
-                      <p className="mt-0.5 truncate text-base font-semibold leading-tight text-[#111827]">
-                        {ride.driver?.name ?? "Unknown"}
-                      </p>
-                    </div>
-
-                    {isOwnRide && (
-                      <span className="whitespace-nowrap rounded-full bg-[#EFF6FF] px-2.5 py-1 text-xs font-medium text-[#2563EB]">
-                        Your ride
-                      </span>
-                    )}
+                {/* Driver row + badge */}
+                <div className="mb-4 flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-xs font-medium uppercase tracking-wide text-ink-soft dark:text-ink-dark-soft">
+                      Driver
+                    </p>
+                    <p className="mt-0.5 truncate text-base font-semibold leading-tight text-ink dark:text-ink-dark">
+                      {ride.driver?.name ?? "Unknown"}
+                    </p>
                   </div>
 
-                  {/* Route */}
-                  <div className="mb-5 flex items-start justify-between gap-2">
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs text-[#9CA3AF]">From</p>
-
-                      <p className="break-words text-sm font-semibold text-[#111827]">
-                        {ride.from}
-                      </p>
-                    </div>
-
-                    <svg
-                      className="mt-4 flex-shrink-0"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#2563EB"
-                      strokeWidth="2"
-                    >
-                      <path
-                        d="M5 12h14M12 5l7 7-7 7"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-
-                    <div className="min-w-0 flex-1 text-right">
-                      <p className="text-xs text-[#9CA3AF]">To</p>
-
-                      <p className="break-words text-sm font-semibold text-[#111827]">
-                        {ride.to}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Meta */}
-                  <div className="flex flex-col gap-2 border-t border-[#F3F4F6] pt-3 text-sm sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
-                    <div className="flex items-center gap-1 text-[#6B7280]">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                      >
-                        <rect x="3" y="4" width="18" height="18" rx="2" />
-                        <line x1="16" y1="2" x2="16" y2="6" />
-                        <line x1="8" y1="2" x2="8" y2="6" />
-                        <line x1="3" y1="10" x2="21" y2="10" />
-                      </svg>
-
-                      <span className="text-xs">
-                        {formatRideTime(ride.rideTime)}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-1 text-[#10B981]">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                      >
-                        <line x1="12" y1="1" x2="12" y2="23" />
-                        <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
-                      </svg>
-
-                      <span className="text-xs font-semibold">
-                        ₹{ride.rideFare}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-1 text-[#6B7280]">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                      >
-                        <path
-                          d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-
-                      <span className="text-xs">
-                        {bookedSeats}/{totalSeats} seats
-                      </span>
-                    </div>
-                  </div>
-
-                  {!isOwnRide && ride.availableSeats > 0 && (
-                    <button
-                      disabled={bookingId === ride._id}
-                      onClick={() => handleBooking(ride._id)}
-                      className="mt-5 w-full rounded-xl bg-[#16A34A] py-2.5 text-sm font-medium text-white transition hover:bg-green-700 disabled:opacity-50"
-                    >
-                      {bookingId === ride._id ? "Booking..." : "Book Ride"}
-                    </button>
-                  )}
+                  {isOwnRide && <Badge tone="primary">Your ride</Badge>}
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+
+                {/* Route */}
+                <div className="mb-5 flex items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs text-ink-soft dark:text-ink-dark-soft">From</p>
+                    <p className="break-words text-sm font-semibold text-ink dark:text-ink-dark">
+                      {ride.from}
+                    </p>
+                  </div>
+
+                  <ArrowRight className="mt-4 h-[18px] w-[18px] shrink-0 text-primary" />
+
+                  <div className="min-w-0 flex-1 text-right">
+                    <p className="text-xs text-ink-soft dark:text-ink-dark-soft">To</p>
+                    <p className="break-words text-sm font-semibold text-ink dark:text-ink-dark">
+                      {ride.to}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Meta */}
+                <div className="flex flex-col gap-2 border-t border-border pt-3 text-sm dark:border-border-dark sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+                  <div className="flex items-center gap-1 text-ink-soft dark:text-ink-dark-soft">
+                    <Clock className="h-3.5 w-3.5" />
+                    <span className="text-xs">{formatRideTime(ride.rideTime)}</span>
+                  </div>
+
+                  <div className="flex items-center gap-1 font-semibold text-success">
+                    <Wallet className="h-3.5 w-3.5" />
+                    <span className="text-xs">₹{ride.rideFare}</span>
+                  </div>
+
+                  <div className="flex items-center gap-1 text-ink-soft dark:text-ink-dark-soft">
+                    <Users className="h-3.5 w-3.5" />
+                    <span className="text-xs">
+                      {bookedSeats}/{totalSeats} seats
+                    </span>
+                  </div>
+                </div>
+
+                {!isOwnRide && ride.availableSeats > 0 && (
+                  <Button
+                    fullWidth
+                    className="mt-5"
+                    loading={bookingId === ride._id}
+                    onClick={() => handleBooking(ride._id)}
+                  >
+                    {bookingId === ride._id ? "Booking..." : "Book Ride"}
+                  </Button>
+                )}
+              </Card>
+            );
+          })}
+        </div>
+      )}
 
       {/* Modals */}
       {activeModal === "vehicle" && (

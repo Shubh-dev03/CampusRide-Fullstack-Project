@@ -1,8 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import Card from "../components/ui/Card";
+import FormField from "../components/ui/FormField";
+import Button from "../components/ui/Button";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -11,7 +15,12 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
+
+  // Preserve a from/to search handed off from the landing page (?from=&to=)
+  // so it lands back on HomePage's search once the user is signed in.
+  const searchQuery = location.search;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +33,7 @@ export default function Login() {
 
       login(res.data.token, res.data.user);
       toast.success("Login successful!");
-      navigate("/");
+      navigate(`/${searchQuery}`);
     } catch (error) {
       toast.error(error.response?.data?.message || "Invalid credentials");
     } finally {
@@ -34,18 +43,19 @@ export default function Login() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4 py-6 sm:px-6"
-      style={{
-        background: "linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)",
-      }}
+      className="flex min-h-screen items-center justify-center px-4 py-6 sm:px-6"
+      style={{ background: "linear-gradient(135deg, #3D8F86 0%, #1E4C46 100%)" }}
     >
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl sm:p-8">
+      <Card className="w-full max-w-md p-6 sm:p-8">
         {/* Icon */}
         <div className="mb-5 flex justify-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#2563EB] shadow-md">
+          <div
+            className="flex h-14 w-14 items-center justify-center rounded-xl shadow-raised"
+            style={{ background: "linear-gradient(135deg, #3D8F86 0%, #2F6F68 100%)" }}
+          >
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
               <path
-                d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h1l2-3h12l2 3h1a2 2 0 012 2v6a2 2 0 01-2 2h-2"
+                d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h1l2-3h12l2 3h1a2 2 0 012 2v6a2 2 0 01-2 2h-2m-7 0a2 2 0 100 4 2 2 0 000-4zm-5 0a2 2 0 100 4 2 2 0 000-4z"
                 stroke="white"
                 strokeWidth="1.8"
                 strokeLinecap="round"
@@ -55,37 +65,27 @@ export default function Login() {
           </div>
         </div>
 
-        <h2 className="mb-1 text-center text-2xl font-semibold text-[#111827] sm:text-3xl">
+        <h2 className="mb-1 text-center text-2xl font-semibold text-ink dark:text-ink-dark sm:text-3xl">
           Welcome Back
         </h2>
 
-        <p className="mb-6 text-center text-sm text-[#9CA3AF]">
+        <p className="mb-6 text-center text-sm text-ink-soft dark:text-ink-dark-soft">
           Sign in to continue to CampusRide
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Email */}
-          <div>
-            <label className="mb-1 block text-sm font-medium text-[#374151]">
-              Email Address
-            </label>
+          <FormField
+            label="Email Address"
+            inputProps={{
+              type: "email",
+              placeholder: "you@campus.edu",
+              value: email,
+              onChange: (e) => setEmail(e.target.value),
+              required: true,
+            }}
+          />
 
-            <input
-              type="email"
-              placeholder="you@campus.edu"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-            />
-          </div>
-
-          {/* Password */}
-          <div>
-            <label className="mb-1 block text-sm font-medium text-[#374151]">
-              Password
-            </label>
-
+          <FormField label="Password">
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -93,69 +93,38 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 pr-10 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                className="w-full rounded-control border border-border bg-surface px-3.5 py-2.5 pr-10 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-primary focus:ring-2 focus:ring-primary/25 dark:border-border-dark dark:bg-surface-dark dark:text-ink-dark"
               />
-
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] transition hover:text-[#4B5563]"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-soft transition hover:text-ink dark:text-ink-dark-soft dark:hover:text-ink-dark"
               >
                 {showPassword ? (
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                  >
-                    <path
-                      d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <EyeOff className="h-[18px] w-[18px]" />
                 ) : (
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                  >
-                    <path
-                      d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
+                  <Eye className="h-[18px] w-[18px]" />
                 )}
               </button>
             </div>
-          </div>
+          </FormField>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-2 w-full rounded-xl bg-[#2563EB] py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
-          >
+          <Button type="submit" fullWidth loading={loading} className="mt-2">
             {loading ? "Signing in..." : "Sign In"}
-          </button>
+          </Button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-[#6B7280]">
+        <p className="mt-6 text-center text-sm text-ink-soft dark:text-ink-dark-soft">
           Don't have an account?{" "}
           <span
-            onClick={() => navigate("/signup")}
-            className="cursor-pointer font-medium text-[#2563EB] hover:underline"
+            onClick={() => navigate(`/signup${searchQuery}`)}
+            className="cursor-pointer font-medium text-primary hover:underline"
           >
             Sign up
           </span>
         </p>
-      </div>
+      </Card>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { Toaster } from "react-hot-toast";
 import { useAuth } from "./context/AuthContext";
 
 import Layout from "./components/Layout";
+import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/HomePage";
 import MyRides from "./pages/MyRides";
 import MyBookings from "./pages/MyBookings";
@@ -31,9 +32,9 @@ export default function App() {
         toastOptions={{
           style: {
             borderRadius: "10px",
-            background: "#fff",
-            color: "#111827",
-            border: "1px solid #E5E7EB",
+            background: "#FFFFFF",
+            color: "#1E2A28",
+            border: "1px solid #DCE6E4",
           },
         }}
       />
@@ -48,13 +49,17 @@ export default function App() {
           element={isAuthenticated ? <Navigate to="/" /> : <Signup />}
         />
 
-        {/* Protected */}
+        {/* Root: public landing page when signed out, ride feed when signed in */}
         <Route
           path="/"
           element={
-            <PrivateRoute>
-              <HomePage />
-            </PrivateRoute>
+            isAuthenticated ? (
+              <Layout>
+                <HomePage />
+              </Layout>
+            ) : (
+              <LandingPage />
+            )
           }
         />
 

@@ -1,7 +1,20 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import {
+  CarFront,
+  Ticket,
+  Pencil,
+  X,
+  Save,
+  User,
+  Mail,
+  Phone,
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { showSuccess, showError } from "../utility/toast";
+import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
+import FormField from "../components/ui/FormField";
 
 function Profile() {
   const { token, user, updateUser } = useAuth();
@@ -91,453 +104,300 @@ function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] px-3 sm:px-4">
-      <div className="max-w-5xl mx-auto py-5 sm:py-6 md:py-8">
-        {/* Page title */}
-        <div className=" mb-5 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl font-semibold text-[#111827]">
-            Profile
-          </h1>
-          <p className="mt-1 text-sm text-[#6B7280]">
-            Manage your account information
-          </p>
-        </div>
+    <div className="mx-auto w-full max-w-5xl">
+      {/* Page title */}
+      <div className="mb-5 sm:mb-6">
+        <h1 className="text-xl font-semibold text-ink dark:text-ink-dark sm:text-2xl">
+          Profile
+        </h1>
+        <p className="mt-1 text-sm text-ink-soft dark:text-ink-dark-soft">
+          Manage your account information
+        </p>
+      </div>
 
-        <div className="overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-sm">
-          {/* Blue gradient header banner */}
-          <div
-            className="h-28 sm:h-28"
-            style={{
-              background: "linear-gradient(135deg, #2563EB 0%, #4F46E5 100%)",
-            }}
-          />
+      <Card className="overflow-hidden">
+        {/* Gradient header banner */}
+        <div
+          className="h-28"
+          style={{ background: "linear-gradient(135deg, #3D8F86 0%, #2F6F68 100%)" }}
+        />
 
-          {/* Avatar + name row */}
-          <div className="px-4 sm:px-6 pb-5 sm:pb-6">
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 -mt-10 sm:-mt-12 mb-5">
-              <div
-                className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-xl text-2xl sm:text-3xl font-semibold text-white shadow-md"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #2563EB 0%, #4F46E5 100%)",
-                }}
-              >
-                {initial}
-              </div>
-              {!isEditing && (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="flex items-center justify-center gap-2 w-full sm:w-auto bg-[#2563EB] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition"
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path
-                      d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Edit Profile
-                </button>
-              )}
+        {/* Avatar + name row */}
+        <div className="px-4 pb-5 sm:px-6 sm:pb-6">
+          <div className="-mt-10 mb-5 flex flex-col gap-4 sm:-mt-12 sm:flex-row sm:items-end sm:justify-between">
+            <div
+              className="flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-semibold text-white shadow-raised sm:h-20 sm:w-20 sm:text-3xl"
+              style={{ background: "linear-gradient(135deg, #3D8F86 0%, #2F6F68 100%)" }}
+            >
+              {initial}
             </div>
-
-            <h2 className="text-xl sm:text-2xl font-semibold text-[#111827]">
-              {user?.name}
-            </h2>
-            <p className="text-sm text-[#9CA3AF] mt-1">
-              Member since {memberSince}
-            </p>
-
-            {/* Stats cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
-              <div className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-xl p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 bg-[#2563EB] rounded-lg flex items-center justify-center">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="white"
-                      strokeWidth="1.8"
-                    >
-                      <path
-                        d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h1l2-3h12l2 3h1a2 2 0 012 2v6a2 2 0 01-2 2h-2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </div>
-                  <span className="text-sm font-medium text-[#1E40AF]">
-                    Rides Offered
-                  </span>
-                </div>
-                <p className="text-3xl font-bold text-[#2563EB]">
-                  {statsLoading ? "—" : ridesOffered}
-                </p>
-                <p className="text-xs text-[#6B7280] mt-1">
-                  Total rides created
-                </p>
-              </div>
-
-              <div className="bg-[#F0FDF4] border border-[#BBF7D0] rounded-xl p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 bg-[#16A34A] rounded-lg flex items-center justify-center">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="white"
-                      strokeWidth="1.8"
-                    >
-                      <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-                      <line x1="1" y1="10" x2="23" y2="10" />
-                    </svg>
-                  </div>
-                  <span className="text-sm font-medium text-[#166534]">
-                    Rides Taken
-                  </span>
-                </div>
-                <p className="text-3xl font-bold text-[#16A34A]">
-                  {statsLoading ? "—" : ridesTaken}
-                </p>
-                <p className="text-xs text-[#6B7280] mt-1">
-                  Total rides booked
-                </p>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <hr className="border-[#F3F4F6] my-6" />
-
-            {isEditing ? (
-              /* ---- EDIT MODE ---- */
-              <form onSubmit={handleSave} className="space-y-6">
-                {/* Name + Email */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-[#374151] mb-1">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full border border-[#E5E7EB] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[#374151] mb-1">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      value={user?.email ?? ""}
-                      disabled
-                      className="w-full border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl px-3 py-2.5 text-sm text-[#9CA3AF] cursor-not-allowed"
-                    />
-                  </div>
-                </div>
-
-                {/* Phone */}
-                <div>
-                  <label className="block text-sm font-medium text-[#374151] mb-1">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+91 (555) 000-0000"
-                    className="w-full border border-[#E5E7EB] rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                  />
-                </div>
-
-                {/* Vehicle Information section */}
-                <div>
-                  <hr className="border-[#F3F4F6] mb-5" />
-                  <div className="flex items-center gap-2 mb-1">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#2563EB"
-                      strokeWidth="1.8"
-                    >
-                      <path
-                        d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h1l2-3h12l2 3h1a2 2 0 012 2v6a2 2 0 01-2 2h-2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <h3 className="text-base font-semibold text-[#111827]">
-                      Vehicle Information
-                    </h3>
-                  </div>
-                  <p className="text-xs text-[#9CA3AF] mb-4">
-                    Add your vehicle details (optional, required to offer rides)
-                  </p>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-[#374151] mb-1">
-                        Make
-                      </label>
-                      <input
-                        type="text"
-                        value={make}
-                        onChange={(e) => setMake(e.target.value)}
-                        placeholder="e.g. Toyota"
-                        className="w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm transition-colors focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-[#374151] mb-1">
-                        Model
-                      </label>
-                      <input
-                        type="text"
-                        value={model}
-                        onChange={(e) => setModel(e.target.value)}
-                        placeholder="e.g. Camry"
-                        className="w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm transition-colors focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-[#374151] mb-1">
-                        Capacity
-                      </label>
-                      <input
-                        type="number"
-                        min="1"
-                        max="10"
-                        value={capacity}
-                        onChange={(e) => setCapacity(e.target.value)}
-                        placeholder="Seats"
-                        className="w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm transition-colors focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-[#374151] mb-1">
-                        License Plate
-                      </label>
-                      <input
-                        type="text"
-                        value={licensePlate}
-                        onChange={(e) =>
-                          setLicensePlate(e.target.value.toUpperCase())
-                        }
-                        placeholder="e.g. MH12 AB1234"
-                        className="w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm uppercase transition-colors focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Save / Cancel buttons */}
-                <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
-                  <button
-                    type="button"
-                    onClick={handleCancelEdit}
-                    className="flex-1 flex items-center justify-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-medium text-[#374151] transition hover:bg-[#F9FAFB]"
-                  >
-                    <span>×</span> Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={saving}
-                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-[#2563EB] px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path
-                        d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2zM17 21v-8H7v8M7 3v5h8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    {saving ? "Saving..." : "Save Changes"}
-                  </button>
-                </div>
-              </form>
-            ) : (
-              /* ---- VIEW MODE ---- */
-              <div className="space-y-8">
-                <div>
-                  <h3 className="text-base font-semibold text-[#111827] mb-4">
-                    Personal Information
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div>
-                      <p className="text-xs text-[#9CA3AF] font-medium mb-1">
-                        Full Name
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="#9CA3AF"
-                          strokeWidth="1.8"
-                        >
-                          <path
-                            d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        <span className="text-sm text-[#111827] font-medium">
-                          {user?.name ?? "—"}
-                        </span>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-xs text-[#9CA3AF] font-medium mb-1">
-                        Email Address
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="#9CA3AF"
-                          strokeWidth="1.8"
-                        >
-                          <path
-                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        <span className="text-sm text-[#111827] font-medium">
-                          {user?.email ?? "—"}
-                        </span>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-xs text-[#9CA3AF] font-medium mb-1">
-                        Phone Number
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="#9CA3AF"
-                          strokeWidth="1.8"
-                        >
-                          <path
-                            d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.08 1.17 2 2 0 012.09 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        <span className="text-sm text-[#111827] font-medium">
-                          {user?.phone ? `+${user.phone}` : "Not provided"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Vehicle info — view mode */}
-                {user?.vehicleDetails && (
-                  <>
-                    <hr className="border-[#F3F4F6]" />
-                    <div>
-                      <div className="flex items-center gap-2 mb-4">
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="#2563EB"
-                          strokeWidth="1.8"
-                        >
-                          <path
-                            d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h1l2-3h12l2 3h1a2 2 0 012 2v6a2 2 0 01-2 2h-2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        <h3 className="text-base font-semibold text-[#111827]">
-                          Vehicle Information
-                        </h3>
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm">
-                        <div>
-                          <p className="text-xs text-[#9CA3AF]">Make</p>
-                          <p className="font-medium text-[#111827]">
-                            {user.vehicleDetails.make}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-[#9CA3AF]">Model</p>
-                          <p className="font-medium text-[#111827]">
-                            {user.vehicleDetails.model}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-[#9CA3AF]">
-                            License Plate
-                          </p>
-                          <p className="font-medium text-[#111827]">
-                            {user.vehicleDetails.licensePlate}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-[#9CA3AF]">Capacity</p>
-                          <p className="font-medium text-[#111827]">
-                            {user.vehicleDetails.capacity} seats
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {!user?.vehicleDetails && (
-                  <>
-                    <hr className="border-[#F3F4F6]" />
-                    <div className="rounded-xl border border-[#FED7AA] bg-[#FFF7ED] p-5">
-                      <p className="text-sm font-medium text-[#92400E]">
-                        No vehicle added yet
-                      </p>
-                      <p className="text-xs text-[#B45309] mt-0.5">
-                        Add your vehicle details to start offering rides.
-                      </p>
-                      <button
-                        onClick={() => setIsEditing(true)}
-                        className="mt-4 inline-flex items-center text-sm font-medium text-[#D97706] transition hover:text-[#B45309]"
-                      >
-                        Add vehicle →
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
+            {!isEditing && (
+              <Button onClick={() => setIsEditing(true)} className="w-full sm:w-auto">
+                <Pencil className="h-3.5 w-3.5" />
+                Edit Profile
+              </Button>
             )}
           </div>
+
+          <h2 className="text-xl font-semibold text-ink dark:text-ink-dark sm:text-2xl">
+            {user?.name}
+          </h2>
+          <p className="mt-1 text-sm text-ink-soft dark:text-ink-dark-soft">
+            Member since {memberSince}
+          </p>
+
+          {/* Stats cards */}
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="rounded-card border border-primary/20 bg-primary-light p-5 dark:border-primary/25 dark:bg-surface-dark">
+              <div className="mb-2 flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                  <CarFront className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-sm font-medium text-primary-hover dark:text-primary">
+                  Rides Offered
+                </span>
+              </div>
+              <p className="text-3xl font-bold text-primary">
+                {statsLoading ? "—" : ridesOffered}
+              </p>
+              <p className="mt-1 text-xs text-ink-soft dark:text-ink-dark-soft">
+                Total rides created
+              </p>
+            </div>
+
+            <div className="rounded-card border border-success/25 bg-[#EAF5EC] p-5 dark:border-success/25 dark:bg-surface-dark">
+              <div className="mb-2 flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success">
+                  <Ticket className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-sm font-medium text-[#3F6B48] dark:text-success">
+                  Rides Taken
+                </span>
+              </div>
+              <p className="text-3xl font-bold text-success">
+                {statsLoading ? "—" : ridesTaken}
+              </p>
+              <p className="mt-1 text-xs text-ink-soft dark:text-ink-dark-soft">
+                Total rides booked
+              </p>
+            </div>
+          </div>
+
+          <hr className="my-6 border-border dark:border-border-dark" />
+
+          {isEditing ? (
+            /* ---- EDIT MODE ---- */
+            <form onSubmit={handleSave} className="space-y-6">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FormField
+                  label="Full Name"
+                  inputProps={{
+                    type: "text",
+                    value: name,
+                    onChange: (e) => setName(e.target.value),
+                  }}
+                />
+                <FormField
+                  label="Email Address"
+                  inputProps={{
+                    type: "email",
+                    value: user?.email ?? "",
+                    disabled: true,
+                    className: "cursor-not-allowed opacity-70",
+                  }}
+                />
+              </div>
+
+              <FormField
+                label="Phone Number"
+                inputProps={{
+                  type: "tel",
+                  value: phone,
+                  onChange: (e) => setPhone(e.target.value),
+                  placeholder: "+91 (555) 000-0000",
+                }}
+              />
+
+              <div>
+                <hr className="mb-5 border-border dark:border-border-dark" />
+                <div className="mb-1 flex items-center gap-2">
+                  <CarFront className="h-[18px] w-[18px] text-primary" />
+                  <h3 className="text-base font-semibold text-ink dark:text-ink-dark">
+                    Vehicle Information
+                  </h3>
+                </div>
+                <p className="mb-4 text-xs text-ink-soft dark:text-ink-dark-soft">
+                  Add your vehicle details (optional, required to offer rides)
+                </p>
+
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <FormField
+                    label="Make"
+                    inputProps={{
+                      type: "text",
+                      value: make,
+                      onChange: (e) => setMake(e.target.value),
+                      placeholder: "e.g. Toyota",
+                    }}
+                  />
+                  <FormField
+                    label="Model"
+                    inputProps={{
+                      type: "text",
+                      value: model,
+                      onChange: (e) => setModel(e.target.value),
+                      placeholder: "e.g. Camry",
+                    }}
+                  />
+                  <FormField
+                    label="Capacity"
+                    inputProps={{
+                      type: "number",
+                      min: 1,
+                      max: 10,
+                      value: capacity,
+                      onChange: (e) => setCapacity(e.target.value),
+                      placeholder: "Seats",
+                    }}
+                  />
+                  <FormField
+                    label="License Plate"
+                    inputProps={{
+                      type: "text",
+                      value: licensePlate,
+                      onChange: (e) => setLicensePlate(e.target.value.toUpperCase()),
+                      placeholder: "e.g. MH12 AB1234",
+                      className: "uppercase",
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col-reverse gap-3 pt-4 sm:flex-row">
+                <Button
+                  type="button"
+                  variant="outline"
+                  fullWidth
+                  onClick={handleCancelEdit}
+                >
+                  <X className="h-3.5 w-3.5" /> Cancel
+                </Button>
+                <Button type="submit" fullWidth loading={saving}>
+                  <Save className="h-3.5 w-3.5" />
+                  {saving ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
+            </form>
+          ) : (
+            /* ---- VIEW MODE ---- */
+            <div className="space-y-8">
+              <div>
+                <h3 className="mb-4 text-base font-semibold text-ink dark:text-ink-dark">
+                  Personal Information
+                </h3>
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  <div>
+                    <p className="mb-1 text-xs font-medium text-ink-soft dark:text-ink-dark-soft">
+                      Full Name
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <User className="h-3.5 w-3.5 text-ink-soft dark:text-ink-dark-soft" />
+                      <span className="text-sm font-medium text-ink dark:text-ink-dark">
+                        {user?.name ?? "—"}
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="mb-1 text-xs font-medium text-ink-soft dark:text-ink-dark-soft">
+                      Email Address
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-3.5 w-3.5 text-ink-soft dark:text-ink-dark-soft" />
+                      <span className="text-sm font-medium text-ink dark:text-ink-dark">
+                        {user?.email ?? "—"}
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="mb-1 text-xs font-medium text-ink-soft dark:text-ink-dark-soft">
+                      Phone Number
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-3.5 w-3.5 text-ink-soft dark:text-ink-dark-soft" />
+                      <span className="text-sm font-medium text-ink dark:text-ink-dark">
+                        {user?.phone ? `+${user.phone}` : "Not provided"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Vehicle info — view mode */}
+              {user?.vehicleDetails && (
+                <>
+                  <hr className="border-border dark:border-border-dark" />
+                  <div>
+                    <div className="mb-4 flex items-center gap-2">
+                      <CarFront className="h-4 w-4 text-primary" />
+                      <h3 className="text-base font-semibold text-ink dark:text-ink-dark">
+                        Vehicle Information
+                      </h3>
+                    </div>
+                    <div className="grid grid-cols-1 gap-5 text-sm sm:grid-cols-2">
+                      <div>
+                        <p className="text-xs text-ink-soft dark:text-ink-dark-soft">Make</p>
+                        <p className="font-medium text-ink dark:text-ink-dark">
+                          {user.vehicleDetails.make}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-ink-soft dark:text-ink-dark-soft">Model</p>
+                        <p className="font-medium text-ink dark:text-ink-dark">
+                          {user.vehicleDetails.model}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-ink-soft dark:text-ink-dark-soft">
+                          License Plate
+                        </p>
+                        <p className="font-medium text-ink dark:text-ink-dark">
+                          {user.vehicleDetails.licensePlate}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-ink-soft dark:text-ink-dark-soft">Capacity</p>
+                        <p className="font-medium text-ink dark:text-ink-dark">
+                          {user.vehicleDetails.capacity} seats
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {!user?.vehicleDetails && (
+                <>
+                  <hr className="border-border dark:border-border-dark" />
+                  <div className="rounded-card border border-cta/30 bg-cta/10 p-5">
+                    <p className="text-sm font-medium text-cta-hover">
+                      No vehicle added yet
+                    </p>
+                    <p className="mt-0.5 text-xs text-ink-soft dark:text-ink-dark-soft">
+                      Add your vehicle details to start offering rides.
+                    </p>
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="mt-4 inline-flex items-center text-sm font-medium text-cta transition hover:text-cta-hover"
+                    >
+                      Add vehicle →
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
